@@ -1,0 +1,19 @@
+{
+  "name": "words-with-whales",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RadicalRoy/words-with-whales.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RadicalRoy/words-with-whales/issues"
+  },
+  "homepage": "https://github.com/RadicalRoy/words-with-whales#readme"
+}
