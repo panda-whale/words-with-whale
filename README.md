@@ -1,1 +1,1 @@
-# words-with-whale
+# words-with-whales
