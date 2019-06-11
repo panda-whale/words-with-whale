@@ -6,7 +6,8 @@ import Signup from './Signup';
 import openSocket from "socket.io-client";
 
 
-const ipAddress = "http://192.168.0.97:3000";
+const ipAddress = "http://192.168.0.97:3000"; 
+// const ipAddress = "127.0.0.1:3000";
 
 class App extends Component {
 
@@ -20,8 +21,8 @@ class App extends Component {
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
+      ['-', '-', '-', '-','-','-','-','*','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','★','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
@@ -33,6 +34,10 @@ class App extends Component {
       color: null,
       }
         this.state.socket.on('color', (color) => this.setState({...this.state, color}))
+        this.onClick = this.onClick.bind(this);
+    }
+    onClick (e){
+      console.log(e.target.id);
     }
     render() {
         const { board, letter } = this.state;
@@ -43,7 +48,7 @@ class App extends Component {
                   <h2>Welcome player {this.state.color}</h2>
                 }
                 < Signup />
-                < Board board={ board } />
+                < Board board={ board } onClick={this.onClick} />
                 < Bench letter={letter} />
             </div>
         )
@@ -51,3 +56,5 @@ class App extends Component {
 
 }
 export default App;
+
+// onClick={this.onClick}
