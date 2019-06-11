@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { render } from 'react-dom'
 import Board from '../components/Board';
 import Bench from './Bench';
+import Signup from './Signup';
 import openSocket from 'socket.io-client';
 
 const ipAddress = 'http://192.168.0.97:3000';
@@ -29,7 +30,7 @@ class App extends Component {
                 ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-',]
             ],
             letter: ['a'],
-            socket: openSocket(ipAddress);
+            socket: openSocket(ipAddress),
         }
     }
     render() {
@@ -37,6 +38,7 @@ class App extends Component {
         return (
             <div>
                 <h1>Words With Whales</h1>
+                < Signup />
                 < Board board={ board } />
                 < Bench letter={letter} />
             </div>
