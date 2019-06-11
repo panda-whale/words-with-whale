@@ -1,5 +1,11 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
+
+const BoardController = require('./controllers/BoardController');
+
+app.use(bodyParser.json());
+
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
@@ -36,7 +42,7 @@ function shuffle(array) {
 
 shuffle(pool);
 
-console.log(pool);
+// console.log(pool);
 
 const points = {
   'A' : 1,
@@ -69,7 +75,7 @@ const points = {
 
 
 
-app.post('/isWord', (req, res) => {
+app.post('/isWord', BoardController.checkWord,  (req, res) => {
   res.send();
 }); // should receive array of potential words
 
