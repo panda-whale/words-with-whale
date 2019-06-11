@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const BoardController = require('./controllers/boardController');
+const PlayerController = require('./controllers/playerController');
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
@@ -39,5 +40,9 @@ if(process.env.NODE_ENV === 'production') {
 
 
 
-io.on('connection', () => {console.log('SOCKET CONNECTED!')});
+io.on('connection', (socket) => {
+  console.log('SOCKET CONNECTED!');
+  PlayerController.addPlayer(socket);
+
+});
 server.listen(3000, () => console.log('SERVER IS CONNECTED ON 3000'));
