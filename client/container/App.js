@@ -4,6 +4,8 @@ import Board from '../components/Board';
 import Bench from './Bench';
 import openSocket from 'socket.io-client';
 
+const ipAddress = 'http://192.168.0.97:3000';
+
 
 class App extends Component {
     constructor(props) {
@@ -27,7 +29,7 @@ class App extends Component {
                 ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-',]
             ],
             letter: ['a'],
-            socket: openSocket('http://localhost:3000')
+            socket: openSocket(ipAddress);
         }
     }
     render() {
