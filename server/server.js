@@ -43,6 +43,7 @@ if(process.env.NODE_ENV === 'production') {
 io.on('connection', (socket) => {
   console.log('SOCKET CONNECTED!');
   PlayerController.addPlayer(socket);
+  PlayerController.playerConnect(io);
 
 });
 server.listen(3000, () => console.log('SERVER IS CONNECTED ON 3000'));
