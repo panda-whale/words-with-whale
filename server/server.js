@@ -18,7 +18,6 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, DELETE");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  //res.header("X-Content-Type-Options", "nosniff");
   return next();
 });
 
@@ -40,5 +39,5 @@ if(process.env.NODE_ENV === 'production') {
 
 
 
-io.on('connection', () => {console.log('I AM CONNECTED!')});
+io.on('connection', () => {console.log('SOCKET CONNECTED!')});
 server.listen(3000, () => console.log('SERVER IS CONNECTED ON 3000'));
