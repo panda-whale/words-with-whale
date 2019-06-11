@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { render } from 'react-dom'
 import Board from '../components/Board';
 import Bench from './Bench';
+import openSocket from 'socket.io-client';
 
 
 class App extends Component {
@@ -25,7 +26,8 @@ class App extends Component {
                 ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-',],
                 ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-',]
             ],
-            letter: ['a']
+            letter: ['a'],
+            socket: openSocket('http://localhost:3000')
         }
     }
     render() {
