@@ -1,13 +1,18 @@
 
-const colors = ['Red', 'Yellow', 'Blue', 'Green'];
+const availableColors = ['red', 'yellow', 'blue', 'green'];
 
-const players = [];
+const players = {'red': null, 'blue': null, 'yellow': null, 'green': null};
 
 let PlayerController = {
-  addPlayer: (req, res, next) => {
-    res.locals.color = colors[players.length];
-    players[players.length] = colors[players.length];
-  }
+  addPlayer: (socket) => {
+
+    let color = availableColors.pop();
+
+    if(!color) return socket.disconnect(); //if no available colors, disconnect player
+
+    players[color] = socket;
+    socket.emit('color', color);
+  },
 };
 
 module.exports = PlayerController;
