@@ -3,9 +3,12 @@ import Tile from './Tile';
 
 const Row = (props) => {
     let tiles = [];
+    
     for(let i = 0; i < props.row.length; i++) {
-        const id = `${props.id}${i}`
-        tiles.push(< Tile id={id} tile={props.row[i]} />)
+        // const id = `${props.id}, ${i}`
+        const rowId = props.id;
+        const columnId = i
+        tiles.push(< Tile row={rowId} column={columnId} tile={props.row[i]} />)
     }
   
     return (

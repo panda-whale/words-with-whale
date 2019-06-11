@@ -1,9 +1,10 @@
 import React from 'react';
 
 const Tile = (props) => {
-    console.log(props.id)
+    console.log('row', props.row)
+    console.log('column', props.column)
     return (
-            <button id={props.id}>{props.board}</button>
+            <button rowid={props.row} columnid={props.column} >{props.tile}</button>
     )
 }
 
