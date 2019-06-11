@@ -7,7 +7,7 @@ const Row = (props) => {
         const id = `${props.id}${i}`
         tiles.push(< Tile id={id} tile={props.row[i]} />)
     }
-    // console.log(tiles);
+  
     return (
         <div>
             {tiles}
