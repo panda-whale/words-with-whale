@@ -9,16 +9,10 @@ import './../styles.scss';
 
 
 
-<<<<<<< HEAD
-
-//  const ipAddress = "http://192.168.0.97:3000"; // Roy's
- const ipAddress = "http://192.168.0.221:3000";
-=======
 //  const ipAddress = "http://192.168.0.97:3000"; // Roy's
 //  const ipAddress = "http://192.168.0.221:3000";
 const ipAddress = "http://192.168.0.161:3000"; //sam
 
->>>>>>> 67ccd3e44bf30982279c8135a87e895ef3b7cff7
 
 
 class App extends Component {
