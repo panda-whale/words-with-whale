@@ -6,7 +6,7 @@ const Tile = props => {
   //console.log("column", props.column);
   
   return (
-    <button id={[props.row, props.column]} onClick={props.onClick} className="tiles">
+    <button id={[props.row, props.column]} onClick={props.boardPlace} className="tiles" >
       {props.tile}
     </button>
   );

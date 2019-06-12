@@ -72,11 +72,12 @@ BoardController = {
     return tiles;
   },
 
-  appendTiles: (tiles) => {
+  mulligan: (tiles) => {
     // console.log(pool.length);
     for(let i = 0; i < tiles.b.length; i++) {
       pool.push(tiles.b[i].letter);
     }
+    BoardController.shuffle(pool);
     // console.log('this is after forloop', pool.length); this works!!!
     return BoardController.getTiles(7)
   

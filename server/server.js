@@ -65,10 +65,10 @@ io.on('connection', (socket) => {
         }
       }
     });
-    
+
     socket.on('getTiles', (data) => {
       const players = PlayerController.getPlayers();
-      let appendTile = BoardController.appendTiles(data);
+      let appendTile = BoardController.mulligan(data);
       players[data.c].emit('mulliganTiles', appendTile);
     });
 
