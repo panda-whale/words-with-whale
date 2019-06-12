@@ -17,7 +17,7 @@ const Bench = (props) => {
             </div>
             <button onClick={() => props.mulligan()}>mull</button>
             <button>done</button>
-            <button>pass</button>
+            <button onClick={() => props.pass()} disabled={props.color !== props.turn} >pass</button>
         </div>
     )
 }

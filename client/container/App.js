@@ -7,8 +7,8 @@ import openSocket from "socket.io-client";
 
 
 
-// const ipAddress = "http://192.168.0.97:3000";
-const ipAddress = "http://192.168.0.221:3000";
+ const ipAddress = "http://192.168.0.97:3000"; // Roy's
+ //const ipAddress = "http://192.168.0.221:3000";
 
 
 class App extends Component {
@@ -75,7 +75,6 @@ class App extends Component {
       // }
     }
     click2StartGame () {
-      // console.log('emitting game start');
       this.state.socket.emit('gameStart');
     }
 
@@ -87,10 +86,10 @@ class App extends Component {
     pickLetter (e) {
       // console.log('this is the exact letter', e.target.id)
       this.setState({...this.state, letter: e.target.id});
+    }
 
     pass () {
-    this.state.socket.emit('pass');
-
+      this.state.socket.emit('pass');
     }
     render() {
         const { board, allPlayers, bench, points} = this.state;
@@ -104,18 +103,21 @@ class App extends Component {
                 {this.state.color &&
                   <h2>Welcome player {this.state.color}</h2>
                 }
+                {this.state.turn &&
+                  <h2>It is player {this.state.turn + '\'s'} turn!</h2>
+                }
 
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
                     < Board board={board}  onClick={this.onClick}/>
-                    < Bench bench={bench} points={points} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} />
+                  < Bench bench={bench} points={points} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} />
                   </div>
                 }
             </div>
         )
     }
 
-  
+
 }
 export default App;
 
