@@ -3,16 +3,17 @@ import React, { useState, useEffect } from 'react';
 
 const Lobby = (props) => {
 
-  let playersArr = props.allPlayers;
-  console.log("this is inside lobby");
-  console.log(playersArr);
+  const players = props.allPlayers.map((ele) =>
+                                    { return <p>{ele}</p>});
 
   return (
       <div>
           <div>
-            {playersArr}
+            {players}
           </div>
+          <button onClick={() => {console.log('CLICK');props.click2StartGame();}}>START GAME</button>
       </div>
+
   )
 }
 
