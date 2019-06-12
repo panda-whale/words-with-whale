@@ -80,16 +80,6 @@ class App extends Component {
     }
 
   
-  render() {
-    const { board, letter } = this.state;
-    return (
-      <div>
-        <h1>Words With Whales</h1>
-        <Board board={board} />
-        <Bench letter={letter} />
-      </div>
-    );
-  }
 }
 export default App;
 
