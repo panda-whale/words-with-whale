@@ -7,8 +7,10 @@ import openSocket from "socket.io-client";
 
 
 
- const ipAddress = "http://192.168.0.97:3000"; // Roy's
- //const ipAddress = "http://192.168.0.221:3000";
+//  const ipAddress = "http://192.168.0.97:3000"; // Roy's
+//  const ipAddress = "http://192.168.0.221:3000";
+const ipAddress = "http://192.168.0.161:3000"; //sam
+
 
 
 class App extends Component {
@@ -16,29 +18,30 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      board: [['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-',  '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','*','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-']],
+      board: [],
       socket: openSocket(ipAddress),
       color: null,
       turn: null,
       allPlayers: [],
       gameHasStarted: 0,
       bench: [],
-      letter: {value : '', index : null}
+      letter: {value : '', index : null},
+      usedTiles: []
       }
+
+      for (let i =0; i<15; i++) {
+        let rowArr = [];
+        for (let j=0; j<15; j++) {
+          if (i=== 7 && j==7) {
+            rowArr.push({letter:'*', points: 0})
+          } else {
+            rowArr.push({letter: '-', points: 0})
+          }
+        }
+        this.state.board.push(rowArr);
+      }
+
+
       // socket listeners
       this.state.socket.on('color', (color) => this.setState({...this.state, color}));
       this.state.socket.on('playerConnect', (players) => this.setState({...this.state, allPlayers: players}));
@@ -61,11 +64,18 @@ class App extends Component {
         // let newBoard = this.state.board.slice();
         // console.log(this.state.board[num[0]][num[1]])
         let cord = this.state.board.slice();
-        if(cord[num[0]][num[1]] === '-') {
-          cord[num[0]][num[1]] = this.state.letter.value;
+        if(cord[num[0]][num[1]].letter === '-' || cord[num[0]][num[1]].letter === '*') {
+          cord[num[0]][num[1]].letter = this.state.letter.value;
+          cord[num[0]][num[1]].points = this.state.letter.points;
+          
           this.setState({...this.state, board:cord, letter:{value : '', index : null}});
           // this works
-        }
+        } 
+
+      }
+
+      else if (e.target.id.includes(',') {
+          
       }
     }
     click2StartGame () {
@@ -90,8 +100,7 @@ class App extends Component {
           const newBench = this.state.bench;
           [newBench[letterIndex], newBench[swapId]] = [newBench[swapId], newBench[letterIndex]];
           return this.setState({...this.state, letter:{value : '', index : null}, bench: newBench})
-        }
-
+        } 
         console.log('swapping the letter');
       } else {
         console.log('setting the letter');
@@ -105,8 +114,8 @@ class App extends Component {
       this.state.socket.emit('pass');
     }
     render() {
-
         const { board, allPlayers, bench} = this.state;
+        console.log(board)
         console.log(allPlayers);
         console.log(this.state.turn);
         console.log(this.state.gameHasStarted);
