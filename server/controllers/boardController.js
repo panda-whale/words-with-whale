@@ -1,5 +1,5 @@
 const axios = require ('axios');
-const points = require( '../constants/points');
+const {Points} = require( '../constants/points');
 
 const LOBBY = 0;
 const GAME_STARTED = 1;
@@ -66,7 +66,7 @@ BoardController = {
     const tiles = [];
     for(let i = 0; i < n; i++) {
       const letter = pool.pop();
-      tiles.push({letter, points: points[letter]});
+      tiles.push({letter, points: Points[letter]});
     }
     return tiles;
   }
