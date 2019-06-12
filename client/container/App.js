@@ -6,8 +6,8 @@ import Lobby from './Lobby';
 import openSocket from "socket.io-client";
 
 
-const ipAddress = "http://192.168.0.97:3000";
-// const ipAddress = "127.0.0.1:3000";
+//const ipAddress = "http://192.168.0.97:3000";
+const ipAddress = "localhost:3000";
 
 class App extends Component {
 
@@ -25,10 +25,7 @@ class App extends Component {
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','★','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-<<<<<<< HEAD
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-=======
->>>>>>> 79b8217659d444f5bbb576ef05fb2a8fce85acdd
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
@@ -46,8 +43,10 @@ class App extends Component {
         this.state.socket.on('playerConnect', (players) => this.setState({...this.state, allPlayers: players}));
         this.state.socket.on('initGame', ({tiles, turn}) => this.setState({
           ...this.state, turn, bench: tiles, gameHasStarted : 1}));
+        this.state.socket.on('changeTurn', (turn) => this.setState({...this.state, turn}));
         this.onClick = this.onClick.bind(this);
         this.click2StartGame = this.click2StartGame.bind(this);
+        this.pass = this.pass.bind(this);
     }
     onClick (e){
       console.log(e.target.id);
@@ -56,9 +55,14 @@ class App extends Component {
       console.log('emitting game start');
       this.state.socket.emit('gameStart');
     }
+    pass () {
+    this.state.socket.emit('pass');
+    }
     render() {
         const { board, letter, allPlayers} = this.state;
         console.log(allPlayers);
+        console.log(this.state.turn);
+        console.log(this.state.gameHasStarted);
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
             <div>
