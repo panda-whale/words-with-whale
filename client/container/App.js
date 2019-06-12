@@ -6,8 +6,10 @@ import Lobby from './Lobby';
 import openSocket from "socket.io-client";
 
 
+
 // const ipAddress = "http://192.168.0.97:3000";
 const ipAddress = "http://192.168.0.221:3000";
+
 
 class App extends Component {
 
@@ -38,15 +40,21 @@ class App extends Component {
       points: [],
       letter: ''
       }
-        this.state.socket.on('color', (color) => this.setState({...this.state, color}));
-        this.state.socket.on('playerConnect', (players) => this.setState({...this.state, allPlayers: players}));
-        this.state.socket.on('mulliganTiles', (tiles) => this.setState({...this.state, bench: tiles}));
-        this.state.socket.on('initGame', ({tiles, turn}) => this.setState({
-          ...this.state, turn, bench: tiles, gameHasStarted : 1, points: tiles}));
-        this.onClick = this.onClick.bind(this);
-        this.click2StartGame = this.click2StartGame.bind(this);
-        this.click2Mulligan = this.click2Mulligan.bind(this);
-        this.pickLetter = this.pickLetter.bind(this);
+      // socket listeners
+      this.state.socket.on('color', (color) => this.setState({...this.state, color}));
+      this.state.socket.on('playerConnect', (players) => this.setState({...this.state, allPlayers: players}));
+      this.state.socket.on('mulliganTiles', (tiles) => this.setState({...this.state, bench: tiles}));
+      this.state.socket.on('initGame', ({tiles, turn}) => this.setState({
+        ...this.state, turn, bench: tiles, gameHasStarted : 1, points: tiles}));
+      this.state.socket.on('changeTurn', (turn) => this.setState({...this.state, turn}));
+
+      // functions
+      this.onClick = this.onClick.bind(this);
+      this.click2StartGame = this.click2StartGame.bind(this);
+      this.click2Mulligan = this.click2Mulligan.bind(this);
+      this.pickLetter = this.pickLetter.bind(this);
+      this.pass = this.pass.bind(this);
+
     }
     onClick (e){
       let num = e.target.id.split(',');
@@ -70,6 +78,7 @@ class App extends Component {
       // console.log('emitting game start');
       this.state.socket.emit('gameStart');
     }
+
     click2Mulligan () {
       // we need to send back all of state.bench to server
       // console.log('this is hittting')
@@ -78,10 +87,16 @@ class App extends Component {
     pickLetter (e) {
       // console.log('this is the exact letter', e.target.id)
       this.setState({...this.state, letter: e.target.id});
+
+    pass () {
+    this.state.socket.emit('pass');
+
     }
     render() {
         const { board, allPlayers, bench, points} = this.state;
         console.log(allPlayers);
+        console.log(this.state.turn);
+        console.log(this.state.gameHasStarted);
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
             <div>
@@ -100,6 +115,7 @@ class App extends Component {
         )
     }
 
+  
 }
 export default App;
 
