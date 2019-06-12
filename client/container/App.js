@@ -33,11 +33,6 @@ class App extends Component {
       allPlayers: [],
       gameHasStarted: 0,
       bench: [],
-<<<<<<< HEAD
-      points: [],
-      letter: '',
-      score: 0,
-=======
       letter: {value : '', index : null},
       usedTiles: []
       }
@@ -52,7 +47,6 @@ class App extends Component {
           }
         }
         this.state.board.push(rowArr);
->>>>>>> 67ccd3e44bf30982279c8135a87e895ef3b7cff7
       }
 
 
