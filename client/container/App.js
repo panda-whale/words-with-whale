@@ -37,7 +37,7 @@ class App extends Component {
       allPlayers: [],
       gameHasStarted: 0,
       bench: [],
-      letter: ''
+      letter: {value : '', index : null}
       }
       // socket listeners
       this.state.socket.on('color', (color) => this.setState({...this.state, color}));
@@ -48,30 +48,25 @@ class App extends Component {
       this.state.socket.on('changeTurn', (turn) => this.setState({...this.state, turn}));
 
       // functions
-      this.onClick = this.onClick.bind(this);
+      this.boardPlace = this.boardPlace.bind(this);
       this.click2StartGame = this.click2StartGame.bind(this);
       this.click2Mulligan = this.click2Mulligan.bind(this);
       this.pickLetter = this.pickLetter.bind(this);
       this.pass = this.pass.bind(this);
 
     }
-    onClick (e){
-      let num = e.target.id.split(',');
-      // let newBoard = this.state.board.slice();
-      // console.log(this.state.board[num[0]][num[1]])
-      let cord = this.state.board.slice();
-      if(cord[num[0]][num[1]] === '-') {
-        cord[num[0]][num[1]] = this.state.letter;
-        this.setState({...this.state, board:cord, letter:''});
-        // this works
+    boardPlace (e) {
+      if(this.state.letter.value !== ''){
+        let num = e.target.id.split(',');
+        // let newBoard = this.state.board.slice();
+        // console.log(this.state.board[num[0]][num[1]])
+        let cord = this.state.board.slice();
+        if(cord[num[0]][num[1]] === '-') {
+          cord[num[0]][num[1]] = this.state.letter.value;
+          this.setState({...this.state, board:cord, letter:{value : '', index : null}});
+          // this works
+        }
       }
-
-      // let cord = this.state.board.slice();
-      // cord[num[0]][num[1]] = this.state.letter;
-      // if(this.state.board[num[0]][num[1]] === '-') {
-      //   this.setState({...this.state, board:cord, letter:''});
-      //   //this does not work
-      // }
     }
     click2StartGame () {
       this.state.socket.emit('gameStart');
@@ -82,15 +77,35 @@ class App extends Component {
       // console.log('this is hittting')
       this.state.socket.emit('getTiles', {b: this.state.bench, c:this.state.color});
     }
+
     pickLetter (e) {
-      // console.log('this is the exact letter', e.target.id)
-      this.setState({...this.state, letter: e.target.id});
+      if(this.state.letter.value !== '') {
+        // click on board
+
+        // click on bench
+        //want to swap with this one.
+        if(e.target.id.includes('bench_')) {
+          const swapId = e.target.id.replace('bench_', '');
+          const letterIndex = this.state.letter.index;
+          const newBench = this.state.bench;
+          [newBench[letterIndex], newBench[swapId]] = [newBench[swapId], newBench[letterIndex]];
+          return this.setState({...this.state, letter:{value : '', index : null}, bench: newBench})
+        }
+
+        console.log('swapping the letter');
+      } else {
+        console.log('setting the letter');
+        console.log(e.target.id);
+        console.log(e.target.id.replace('bench_', ''));
+        this.setState({...this.state, letter: { value: e.target.innerHTML, index: e.target.id.replace('bench_', '')}});
+      }
     }
 
     pass () {
       this.state.socket.emit('pass');
     }
     render() {
+
         const { board, allPlayers, bench} = this.state;
         console.log(allPlayers);
         console.log(this.state.turn);
@@ -108,7 +123,7 @@ class App extends Component {
 
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
-                    < Board board={board}  onClick={this.onClick}/>
+                    < Board board={board} boardPlace={this.boardPlace}/>
                     < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} />
                   </div>
                 }
