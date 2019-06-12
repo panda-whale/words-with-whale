@@ -49,8 +49,22 @@ class App extends Component {
         this.pickLetter = this.pickLetter.bind(this);
     }
     onClick (e){
-      // console.log(e.target.id);
-      console.log(this.state.board[e.target.id]);
+      let num = e.target.id.split(',');
+      // let newBoard = this.state.board.slice();
+      // console.log(this.state.board[num[0]][num[1]])
+      let cord = this.state.board.slice();
+      if(cord[num[0]][num[1]] === '-') {
+        cord[num[0]][num[1]] = this.state.letter;
+        this.setState({...this.state, board:cord, letter:''});
+        // this works
+      }
+
+      // let cord = this.state.board.slice();
+      // cord[num[0]][num[1]] = this.state.letter;
+      // if(this.state.board[num[0]][num[1]] === '-') {
+      //   this.setState({...this.state, board:cord, letter:''});
+      //   //this does not work
+      // }
     }
     click2StartGame () {
       // console.log('emitting game start');
