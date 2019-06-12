@@ -69,6 +69,16 @@ BoardController = {
       tiles.push({letter, points: Points[letter]});
     }
     return tiles;
+  },
+
+  appendTiles: (tiles) => {
+    // console.log(pool.length);
+    for(let i = 0; i < tiles.b.length; i++) {
+      pool.push(tiles.b[i].letter);
+    }
+    // console.log('this is after forloop', pool.length); this works!!!
+    return BoardController.getTiles(7)
+  
   }
 
 
