@@ -67,16 +67,16 @@ class App extends Component {
         if(cord[num[0]][num[1]].letter === '-' || cord[num[0]][num[1]].letter === '*') {
           cord[num[0]][num[1]].letter = this.state.letter.value;
           cord[num[0]][num[1]].points = this.state.letter.points;
-          
+
           this.setState({...this.state, board:cord, letter:{value : '', index : null}});
           // this works
         } 
 
       }
 
-      else if (e.target.id.includes(',') {
+      // else if (e.target.id.includes(',') {
           
-      }
+      // }
     }
     click2StartGame () {
       this.state.socket.emit('gameStart');
