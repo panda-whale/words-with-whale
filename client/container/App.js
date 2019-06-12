@@ -37,7 +37,6 @@ class App extends Component {
       allPlayers: [],
       gameHasStarted: 0,
       bench: [],
-      points: [],
       letter: ''
       }
       // socket listeners
@@ -45,7 +44,7 @@ class App extends Component {
       this.state.socket.on('playerConnect', (players) => this.setState({...this.state, allPlayers: players}));
       this.state.socket.on('mulliganTiles', (tiles) => this.setState({...this.state, bench: tiles}));
       this.state.socket.on('initGame', ({tiles, turn}) => this.setState({
-        ...this.state, turn, bench: tiles, gameHasStarted : 1, points: tiles}));
+        ...this.state, turn, bench: tiles, gameHasStarted : 1}));
       this.state.socket.on('changeTurn', (turn) => this.setState({...this.state, turn}));
 
       // functions
@@ -92,7 +91,7 @@ class App extends Component {
       this.state.socket.emit('pass');
     }
     render() {
-        const { board, allPlayers, bench, points} = this.state;
+        const { board, allPlayers, bench} = this.state;
         console.log(allPlayers);
         console.log(this.state.turn);
         console.log(this.state.gameHasStarted);
@@ -110,7 +109,7 @@ class App extends Component {
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
                     < Board board={board}  onClick={this.onClick}/>
-                  < Bench bench={bench} points={points} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} />
+                    < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} />
                   </div>
                 }
             </div>
