@@ -6,8 +6,8 @@ import Lobby from './Lobby';
 import openSocket from "socket.io-client";
 
 
-const ipAddress = "http://192.168.0.97:3000";
-// const ipAddress = "127.0.0.1:3000";
+// const ipAddress = "http://192.168.0.97:3000";
+const ipAddress = "http://192.168.0.221:3000";
 
 class App extends Component {
 
@@ -29,13 +29,13 @@ class App extends Component {
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-']],
-      letter: ["a"],
       socket: openSocket(ipAddress),
       color: null,
       turn: null,
       allPlayers: [],
       gameHasStarted: 0,
       bench: [],
+      points: [],
       }
         this.state.socket.on('color', (color) => this.setState({...this.state, color}));
         this.state.socket.on('playerConnect', (players) => this.setState({...this.state, allPlayers: players}));
@@ -52,7 +52,7 @@ class App extends Component {
       this.state.socket.emit('gameStart');
     }
     render() {
-        const { board, letter, allPlayers} = this.state;
+        const { board, letter, allPlayers, bench, points} = this.state;
         console.log(allPlayers);
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
@@ -65,7 +65,7 @@ class App extends Component {
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
                     < Board board={board}  onClick={this.onClick}/>
-                    < Bench letter={letter} />
+                    < Bench bench={bench} points={points} />
                   </div>
                 }
             </div>

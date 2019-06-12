@@ -64,10 +64,16 @@ BoardController = {
 
   getTiles: (n) => {
     const tiles = [];
+    // console.log('this is the points', points)
     for(let i = 0; i < n; i++) {
       const letter = pool.pop();
+      // letter comes back as a letter. 
+      console.log('this is the type', points)
+      // console.log('this is the letter', points[letter])
+      // this console log is coming back as undefined
       tiles.push({letter, points: points[letter]});
     }
+    // console.log('this is the tile', tiles);
     return tiles;
   }
 
