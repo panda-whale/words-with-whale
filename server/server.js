@@ -73,11 +73,6 @@ io.on('connection', (socket) => {
   if(BoardController.getGamePhase() !== 0) {
     socket.disconnect();
   }
+
 });
-
-io.on('pass', () => {
-  PlayerController.changeTurn(io);
-})
-
-
 server.listen(3000, () => console.log('SERVER IS CONNECTED ON 3000'));
