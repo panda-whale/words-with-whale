@@ -52,10 +52,8 @@ io.on('connection', (socket) => {
     PlayerController.playerConnect(io);
 
     socket.on('gameStart', () => { // for when user sends Game Start from Lobby Screen
-
       //start Game
       BoardController.startGame();
-
       // send initial tiles to players
       const players = PlayerController.getPlayers();
 
@@ -67,23 +65,23 @@ io.on('connection', (socket) => {
         }
       }
     });
+    
     socket.on('getTiles', (data) => {
-      // console.log('we made it in here', data);
       const players = PlayerController.getPlayers();
       let appendTile = BoardController.appendTiles(data);
-      // console.log(appendTile);
       players[data.c].emit('mulliganTiles', appendTile);
+    });
+
+    socket.on('pass', () => { // listener for turn pass
+      console.log('server received pass message');
+      PlayerController.changeTurn(io);
     })
-    
+
   }
   if(BoardController.getGamePhase() !== 0) {
     socket.disconnect();
   }
 });
-
-io.on('pass', () => {
-  PlayerController.changeTurn(io);
-})
 
 
 server.listen(3000, () => console.log('SERVER IS CONNECTED ON 3000'));
