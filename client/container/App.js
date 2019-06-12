@@ -6,7 +6,7 @@ import Lobby from './Lobby';
 import openSocket from "socket.io-client";
 
 
-const ipAddress = "http://192.168.0.97:3000"; 
+const ipAddress = "http://192.168.0.97:3000";
 // const ipAddress = "127.0.0.1:3000";
 
 class App extends Component {
@@ -32,19 +32,28 @@ class App extends Component {
       letter: ["a"],
       socket: openSocket(ipAddress),
       color: null,
+      turn: null,
       allPlayers: [],
-      gameHasStarted: 0
+      gameHasStarted: 0,
+      bench: [],
       }
-        this.state.socket.on('color', (color) => this.setState({...this.state, color}))
+        this.state.socket.on('color', (color) => this.setState({...this.state, color}));
+        this.state.socket.on('playerConnect', (players) => this.setState({...this.state, allPlayers: players}));
+        this.state.socket.on('initGame', ({tiles, turn}) => this.setState({
+          ...this.state, turn, bench: tiles, gameHasStarted : 1}));
         this.onClick = this.onClick.bind(this);
+        this.click2StartGame = this.click2StartGame.bind(this);
     }
     onClick (e){
       console.log(e.target.id);
-
+    }
+    click2StartGame () {
+      console.log('emitting game start');
+      this.state.socket.emit('gameStart');
     }
     render() {
         const { board, letter, allPlayers} = this.state;
-        //console.log(allPlayers);
+        console.log(allPlayers);
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
             <div>
@@ -53,7 +62,7 @@ class App extends Component {
                   <h2>Welcome player {this.state.color}</h2>
                 }
 
-                { this.state.gameHasStarted === 0 ? <Lobby /> : 
+                { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
                     < Board board={board}  onClick={this.onClick}/>
                     < Bench letter={letter} />
