@@ -24,8 +24,8 @@ app.use(function (req, res, next) {
 
 
 //Request chain for checking words
-app.post('/isWord', BoardController.checkWord,  (req, res) => {
-  res.send();
+app.post('/isWord', BoardController.checkWord, BoardController.calculateScore, (req, res) => {
+  res.send({score: res.locals.sum});
 }); // should receive array of potential words
 
 

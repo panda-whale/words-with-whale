@@ -4,6 +4,7 @@ import Board from "../components/Board";
 import Bench from "./Bench";
 import Lobby from './Lobby';
 import openSocket from "socket.io-client";
+import ScoreBoard from '../components/ScoreBoard';
 
 
 
@@ -38,7 +39,8 @@ class App extends Component {
       gameHasStarted: 0,
       bench: [],
       points: [],
-      letter: ''
+      letter: '',
+      score: [{'color': 'red', 'score': 0} , {'color':'yellow', 'score': 0} , {'color': 'green', 'score': 0}, {'color': 'blue', 'score': 0}],
       }
       // socket listeners
       this.state.socket.on('color', (color) => this.setState({...this.state, color}));
@@ -87,16 +89,16 @@ class App extends Component {
     pickLetter (e) {
       // console.log('this is the exact letter', e.target.id)
       this.setState({...this.state, letter: e.target.id});
-
+    }
     pass () {
     this.state.socket.emit('pass');
 
     }
     render() {
-        const { board, allPlayers, bench, points} = this.state;
-        console.log(allPlayers);
-        console.log(this.state.turn);
-        console.log(this.state.gameHasStarted);
+        const { board, allPlayers, bench, points, score } = this.state;
+        // console.log(allPlayers);
+        // console.log(this.state.turn);
+        // console.log(this.state.gameHasStarted);
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
             <div>
@@ -107,6 +109,7 @@ class App extends Component {
 
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
+                    < ScoreBoard score={score} />
                     < Board board={board}  onClick={this.onClick}/>
                     < Bench bench={bench} points={points} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} />
                   </div>

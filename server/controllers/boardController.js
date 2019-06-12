@@ -51,6 +51,7 @@ BoardController = {
         res.locals.errorType = "Mismatch";
         return next(res.locals.errrorType);
       }
+      res.locals.words = response.data.original;
       return next();
     })
     .catch(error => console.log(error))
@@ -79,6 +80,22 @@ BoardController = {
     // console.log('this is after forloop', pool.length); this works!!!
     return BoardController.getTiles(7)
   
+  },
+
+  calculateScore: (req, res, next) => {
+    // console.log(res.locals.words)
+    let words = res.locals.words.replace(/\s+/g, '');
+    words = words.split('');
+    // console.log('this is the words', words);
+    let sum = 0;
+    words.forEach(el => {
+      // console.log(Points[el]);
+      
+      sum += Points[el.toUpperCase()]
+    })
+    res.locals.sum = sum;
+    // console.log(sum);
+    return next ();
   }
 
 
