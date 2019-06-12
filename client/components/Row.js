@@ -8,7 +8,7 @@ const Row = (props) => {
         // const id = `${props.id}, ${i}`
         const rowId = props.id;
         const columnId = i
-        tiles.push(< Tile row={rowId} column={columnId} tile={props.row[i]} />)
+        tiles.push(< Tile row={rowId} column={columnId} tile={props.row[i]} onClick={props.onClick} />)
     }
   
     return (
@@ -19,3 +19,4 @@ const Row = (props) => {
 }
 
 export default Row;
+// onClick={props.onClick}
