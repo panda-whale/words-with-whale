@@ -39,6 +39,7 @@ class App extends Component {
     render() {
         const { board, letter, allPlayers} = this.state;
         //console.log(allPlayers);
+        if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
             <div>
                 <h1>Words With Whales</h1>

@@ -12,6 +12,10 @@ let PlayerController = {
 
     players[color] = socket;
     socket.emit('color', color);
+
+
+
+    socket.on('test', (testdata) => console.log(color + '\'s data is: ' + testdata));
   },
   playerConnect: (io) => {
     const allPlayers = Object.entries(players).reduce((acc, ele) => {
@@ -20,7 +24,8 @@ let PlayerController = {
     }, []);
     //console.log(allPlayers);
     io.emit('playerConnect', allPlayers);
-  }
+  },
+  getPlayers: () => players,
 };
 
 module.exports = PlayerController;
