@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { render } from "react-dom";
 import Board from "../components/Board";
 import Bench from "./Bench";
-import Signup from './Signup';
+import Lobby from './Lobby';
 import openSocket from "socket.io-client";
 
 
@@ -33,6 +33,7 @@ class App extends Component {
       socket: openSocket(ipAddress),
       color: null,
       allPlayers: [],
+      gameHasStarted: 0
       }
         this.state.socket.on('color', (color) => this.setState({...this.state, color}))
         this.onClick = this.onClick.bind(this);
@@ -51,9 +52,13 @@ class App extends Component {
                 {this.state.color &&
                   <h2>Welcome player {this.state.color}</h2>
                 }
-                < Signup />
-                < Board board={ board } onClick={this.onClick} />
-                < Bench letter={letter} />
+
+                { this.state.gameHasStarted === 0 ? <Lobby /> : 
+                  <div>
+                    < Board board={board}  onClick={this.onClick}/>
+                    < Bench letter={letter} />
+                  </div>
+                }
             </div>
         )
     }
