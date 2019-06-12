@@ -1,5 +1,5 @@
 const axios = require ('axios');
-const points = require( '../constants/points');
+const {Points} = require( '../constants/points');
 
 const LOBBY = 0;
 const GAME_STARTED = 1;
@@ -64,17 +64,21 @@ BoardController = {
 
   getTiles: (n) => {
     const tiles = [];
-    // console.log('this is the points', points)
     for(let i = 0; i < n; i++) {
       const letter = pool.pop();
-      // letter comes back as a letter. 
-      console.log('this is the type', points)
-      // console.log('this is the letter', points[letter])
-      // this console log is coming back as undefined
-      tiles.push({letter, points: points[letter]});
+      tiles.push({letter, points: Points[letter]});
     }
-    // console.log('this is the tile', tiles);
     return tiles;
+  },
+
+  appendTiles: (tiles) => {
+    // console.log(pool.length);
+    for(let i = 0; i < tiles.b.length; i++) {
+      pool.push(tiles.b[i].letter);
+    }
+    // console.log('this is after forloop', pool.length); this works!!!
+    return BoardController.getTiles(7)
+  
   }
 
 

@@ -39,20 +39,27 @@ class App extends Component {
       }
         this.state.socket.on('color', (color) => this.setState({...this.state, color}));
         this.state.socket.on('playerConnect', (players) => this.setState({...this.state, allPlayers: players}));
+        this.state.socket.on('mulliganTiles', (tiles) => this.setState({...this.state, bench: tiles}));
         this.state.socket.on('initGame', ({tiles, turn}) => this.setState({
-          ...this.state, turn, bench: tiles, gameHasStarted : 1}));
+          ...this.state, turn, bench: tiles, gameHasStarted : 1, points: tiles}));
         this.onClick = this.onClick.bind(this);
         this.click2StartGame = this.click2StartGame.bind(this);
+        this.click2Mulligan = this.click2Mulligan.bind(this);
     }
     onClick (e){
       console.log(e.target.id);
     }
     click2StartGame () {
-      console.log('emitting game start');
+      // console.log('emitting game start');
       this.state.socket.emit('gameStart');
     }
+    click2Mulligan () {
+      // we need to send back all of state.bench to server
+      // console.log('this is hittting')
+      this.state.socket.emit('getTiles', {b: this.state.bench, c:this.state.color});
+    }
     render() {
-        const { board, letter, allPlayers, bench, points} = this.state;
+        const { board, allPlayers, bench, points} = this.state;
         console.log(allPlayers);
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
@@ -65,7 +72,7 @@ class App extends Component {
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
                     < Board board={board}  onClick={this.onClick}/>
-                    < Bench bench={bench} points={points} />
+                    < Bench bench={bench} points={points} mulligan={this.click2Mulligan} />
                   </div>
                 }
             </div>

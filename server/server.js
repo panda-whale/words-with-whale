@@ -67,7 +67,13 @@ io.on('connection', (socket) => {
         }
       }
     });
-
+    socket.on('getTiles', (data) => {
+      // console.log('we made it in here', data);
+      const players = PlayerController.getPlayers();
+      let appendTile = BoardController.appendTiles(data);
+      // console.log(appendTile);
+      players[data.c].emit('mulliganTiles', appendTile);
+    })
     
   }
   if(BoardController.getGamePhase() !== 0) {
