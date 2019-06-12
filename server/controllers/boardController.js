@@ -1,6 +1,10 @@
 const axios = require ('axios');
 const points = require( '../constants/points');
 
+const LOBBY = 0;
+const GAME_STARTED = 1;
+
+let gamePhase = LOBBY;
 const pool = ['A','A','A','A','A',
               'A','A','A','A', 'B',
               'B', 'C', 'C', 'D', 'D',
@@ -29,9 +33,9 @@ BoardController = {
       [array[i], array[rand]] = [array[rand], array[i]];
     }
   },
-  
+
   checkWord : (req, res, next) => {
-  
+
     axios.get("https://montanaflynn-spellcheck.p.rapidapi.com/check/", {
       params: {
         text: req.body.words2check
@@ -46,11 +50,28 @@ BoardController = {
       if (Object.keys(response.data.corrections).length > 0) {
         res.locals.errorType = "Mismatch";
         return next(res.locals.errrorType);
-      } 
+      }
       return next();
     })
     .catch(error => console.log(error))
+  },
+
+  getGamePhase: () => gamePhase,
+
+  startGame: () => {
+    gamePhase = GAME_STARTED;
+  },
+
+  getTiles: (n) => {
+    const tiles = [];
+    for(let i = 0; i < n; i++) {
+      const letter = pool.pop();
+      tiles.push({letter, points: points[letter]});
+    }
+    return tiles;
   }
+
+
 };
 
 

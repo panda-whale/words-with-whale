@@ -28,6 +28,10 @@ app.post('/isWord', BoardController.checkWord,  (req, res) => {
   res.send();
 }); // should receive array of potential words
 
+
+app.post('/start', (req, res) => {
+
+})
 //console.log(process.NODE_ENV);
 //console.log(process.env);
 if(process.env.NODE_ENV === 'production') {
@@ -42,7 +46,33 @@ if(process.env.NODE_ENV === 'production') {
 
 io.on('connection', (socket) => {
   console.log('SOCKET CONNECTED!');
-  PlayerController.addPlayer(socket);
+
+  if(BoardController.getGamePhase() === 0) {
+    PlayerController.addPlayer(socket);
+    PlayerController.playerConnect(io);
+
+    socket.on('gameStart', () => { // for when user sends Game Start from Lobby Screen
+
+      //start Game
+      BoardController.startGame();
+
+      // send initial tiles to players
+      const players = PlayerController.getPlayers();
+
+      for(let key in players) {
+        if(players[key]) {
+          // create and send 7 tiles
+          players[key].emit('initGame', { tiles: BoardController.getTiles(7),
+                                          turn: 'green'});
+        }
+      }
+    });
+
+    
+  }
+  if(BoardController.getGamePhase() !== 0) {
+    socket.disconnect();
+  }
 
 });
 server.listen(3000, () => console.log('SERVER IS CONNECTED ON 3000'));
