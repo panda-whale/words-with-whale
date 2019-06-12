@@ -91,6 +91,7 @@ class App extends Component {
       this.state.socket.emit('pass');
     }
     render() {
+      
         const { board, allPlayers, bench} = this.state;
         console.log(allPlayers);
         console.log(this.state.turn);
