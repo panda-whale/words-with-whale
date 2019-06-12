@@ -12,7 +12,7 @@ const Row = (props) => {
     }
   
     return (
-        <div>
+        <div className="cell">
             {tiles}
         </div>
     )

@@ -88,9 +88,7 @@ BoardController = {
     words = words.split('');
     // console.log('this is the words', words);
     let sum = 0;
-    words.forEach(el => {
-      // console.log(Points[el]);
-      
+    words.forEach(el => { 
       sum += Points[el.toUpperCase()]
     })
     res.locals.sum = sum;

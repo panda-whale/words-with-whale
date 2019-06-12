@@ -6,7 +6,7 @@ const Board = props => {
   for (let i = 0; i < props.board.length; i++) {
     rows.push(<Row id={i} row={props.board[i]} onClick={ props.onClick }/>);
   }
-  return <div>{rows}</div>;
+  return <div id="boardContainer">{rows}</div>;
 };
 
 export default Board;

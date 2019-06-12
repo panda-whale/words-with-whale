@@ -11,13 +11,13 @@ const Bench = (props) => {
     // console.log('this is props.bench', props.points);
 
     return (
-        <div>
-            <div>
+        <div id="benchContainer">
+            <div className="letter">
             {letter}
             </div>
-            <button onClick={() => props.mulligan()}>mull</button>
-            <button>done</button>
-            <button onClick={() => props.pass()} disabled={props.color !== props.turn} >pass</button>
+            <button className="button" onClick={() => props.mulligan()}>mull</button>
+            <button className="button">done</button>
+            <button className="button" onClick={() => props.pass()} disabled={props.color !== props.turn} >pass</button>
         </div>
     )
 }

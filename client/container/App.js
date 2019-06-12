@@ -5,11 +5,13 @@ import Bench from "./Bench";
 import Lobby from './Lobby';
 import openSocket from "socket.io-client";
 import ScoreBoard from '../components/ScoreBoard';
+import './../styles.scss';
 
 
 
- const ipAddress = "http://192.168.0.97:3000"; // Roy's
- //const ipAddress = "http://192.168.0.221:3000";
+
+//  const ipAddress = "http://192.168.0.97:3000"; // Roy's
+ const ipAddress = "http://192.168.0.221:3000";
 
 
 class App extends Component {
@@ -40,7 +42,7 @@ class App extends Component {
       bench: [],
       points: [],
       letter: '',
-      score: [{'color': 'red', 'score': 0} , {'color':'yellow', 'score': 0} , {'color': 'green', 'score': 0}, {'color': 'blue', 'score': 0}],
+      score: 0,
       }
       // socket listeners
       this.state.socket.on('color', (color) => this.setState({...this.state, color}));
@@ -56,7 +58,6 @@ class App extends Component {
       this.click2Mulligan = this.click2Mulligan.bind(this);
       this.pickLetter = this.pickLetter.bind(this);
       this.pass = this.pass.bind(this);
-
     }
     onClick (e){
       let num = e.target.id.split(',');
@@ -76,6 +77,7 @@ class App extends Component {
       //   //this does not work
       // }
     }
+
     click2StartGame () {
       this.state.socket.emit('gameStart');
     }
@@ -85,17 +87,16 @@ class App extends Component {
       // console.log('this is hittting')
       this.state.socket.emit('getTiles', {b: this.state.bench, c:this.state.color});
     }
+
     pickLetter (e) {
       // console.log('this is the exact letter', e.target.id)
       this.setState({...this.state, letter: e.target.id});
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> 8c68adc602c9fb52e89bfaad40592580444e2e96
     pass () {
       this.state.socket.emit('pass');
     }
+
     render() {
         const { board, allPlayers, bench, points, score } = this.state;
         // console.log(allPlayers);
@@ -103,18 +104,17 @@ class App extends Component {
         // console.log(this.state.gameHasStarted);
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
-            <div>
-                <h1>Words With Whales</h1>
-                {this.state.color &&
-                  <h2>Welcome player {this.state.color}</h2>
-                }
+            <div className="mainContainer">
+                {/* <h1>Words With Whales</h1> */}
+                {/* {this.state.color &&
+                  <h2>YOU ARE PLAYER {this.state.color}</h2>
+                } */}
                 {this.state.turn &&
                   <h2>It is player {this.state.turn + '\'s'} turn!</h2>
                 }
-
+                 < ScoreBoard score={score} />
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
-                    < ScoreBoard score={score} />
                     < Board board={board}  onClick={this.onClick}/>
                   < Bench bench={bench} points={points} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} />
                   </div>
@@ -122,8 +122,6 @@ class App extends Component {
             </div>
         )
     }
-
-
 }
 export default App;
 

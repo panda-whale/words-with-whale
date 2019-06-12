@@ -1,0 +1,63 @@
+$border: 2px black solid;
+
+
+body {
+    width: 100%;
+    // background-color: green;
+    // height: 100%;
+    font-size: 20px;
+}
+
+
+
+.mainContainer {
+    text-align: center;
+}
+
+#boardContainer {
+    display: flex;
+    justify-content: center;
+    width: 70%;
+    height: 600px;
+    margin: 0 auto;
+    background-color: white;
+}
+
+#benchContainer {
+    margin-top: 20px;
+
+}
+
+.button {
+    margin: 20px 20px;
+    padding: 10px 20px; 
+    border-radius: 3px;
+}
+
+.bench {
+    padding: 12px 27px;
+    border-radius: 3px;
+    font-size: 20px;
+}
+
+.letter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 40%;
+    margin: 0 auto;
+}
+
+.cell {
+    margin: 0;
+}
+
+.tiles {
+    width: 78.41px;
+    height: 40px;
+    margin: 0;
+    font-size: 20px;
+}
+
+
+

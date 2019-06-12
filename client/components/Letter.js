@@ -4,9 +4,9 @@ const Letter = (props) => {
     // console.log('this is props.points', props.points)
 
     return (
-        <div>
-          <p className="bench" onClick={props.pickLetter} id={[props.bench]}>{props.bench}</p>
-          <p className="points">{props.points}</p>
+        <div className="letters">
+          <button className="bench" onClick={props.pickLetter} id={[props.bench]}>{props.bench} - {props.points}</button>
+          {/* <button className="points">{props.points}</button> */}
         </div>
     )
 }
