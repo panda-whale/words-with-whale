@@ -15,7 +15,7 @@ class App extends Component {
     super(props);
     this.state = {
       board: [['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
-      ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
+      ['-', '-', '-',  '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
       ['-', '-', '-', '-','-','-','-','-','-','-','-','-','-','-','-'],
@@ -32,15 +32,18 @@ class App extends Component {
       letter: ["a"],
       socket: openSocket(ipAddress),
       color: null,
+      allPlayers: [],
       }
         this.state.socket.on('color', (color) => this.setState({...this.state, color}))
         this.onClick = this.onClick.bind(this);
     }
     onClick (e){
       console.log(e.target.id);
+
     }
     render() {
-        const { board, letter } = this.state;
+        const { board, letter, allPlayers} = this.state;
+        //console.log(allPlayers);
         return (
             <div>
                 <h1>Words With Whales</h1>
