@@ -36,6 +36,7 @@ class App extends Component {
       gameHasStarted: 0,
       bench: [],
       points: [],
+      letter: ''
       }
         this.state.socket.on('color', (color) => this.setState({...this.state, color}));
         this.state.socket.on('playerConnect', (players) => this.setState({...this.state, allPlayers: players}));
@@ -45,9 +46,11 @@ class App extends Component {
         this.onClick = this.onClick.bind(this);
         this.click2StartGame = this.click2StartGame.bind(this);
         this.click2Mulligan = this.click2Mulligan.bind(this);
+        this.pickLetter = this.pickLetter.bind(this);
     }
     onClick (e){
-      console.log(e.target.id);
+      // console.log(e.target.id);
+      console.log(this.state.board[e.target.id]);
     }
     click2StartGame () {
       // console.log('emitting game start');
@@ -57,6 +60,10 @@ class App extends Component {
       // we need to send back all of state.bench to server
       // console.log('this is hittting')
       this.state.socket.emit('getTiles', {b: this.state.bench, c:this.state.color});
+    }
+    pickLetter (e) {
+      // console.log('this is the exact letter', e.target.id)
+      this.setState({...this.state, letter: e.target.id});
     }
     render() {
         const { board, allPlayers, bench, points} = this.state;
@@ -72,7 +79,7 @@ class App extends Component {
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
                     < Board board={board}  onClick={this.onClick}/>
-                    < Bench bench={bench} points={points} mulligan={this.click2Mulligan} />
+                    < Bench bench={bench} points={points} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} />
                   </div>
                 }
             </div>

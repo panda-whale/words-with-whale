@@ -5,7 +5,7 @@ const Letter = (props) => {
 
     return (
         <div>
-          <p className="bench">{props.bench}</p>
+          <p className="bench" onClick={props.pickLetter} id={[props.bench]}>{props.bench}</p>
           <p className="points">{props.points}</p>
         </div>
     )
