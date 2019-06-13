@@ -49,7 +49,7 @@ class App extends Component {
       this.state.socket.on('initGame', ({tiles, turn}) => this.setState({
         ...this.state, turn, bench: tiles, gameHasStarted : 1}));
       this.state.socket.on('changeTurn', (turn) => this.setState({...this.state, turn}));
-
+      this.state.socket.on('updateBoard', (board) => this.setState({...this.state, board}));
       // functions
       this.boardPlace = this.boardPlace.bind(this);
       this.click2StartGame = this.click2StartGame.bind(this);
@@ -149,7 +149,24 @@ class App extends Component {
       const word = tiles.reduce((acc, ele) => (acc + ele.value), '');
       console.log(word);
 
-      this.socket.
+      fetch(ipAddress + "/isWord", {
+        method: 'POST',
+        headers: { 'content-type': 'application/json'},
+        body: JSON.stringify({
+          words: [word],
+          color: this.state.color,
+          usedTiles: tiles,
+          board: this.state.board,
+        })
+      })
+      .then(response => response.json())
+      .then(response => {
+        console.log(response);
+        // if response has err key then reset board/bench/app state to remove attempted word
+        // else
+      })
+      .catch(error => console.log(error));
+
 
       // check the word upwords and downwards
 

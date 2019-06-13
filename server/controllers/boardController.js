@@ -24,7 +24,7 @@ const pool = ['A','A','A','A','A',
               'T','T','T','T','T',
               'T','U','U','U','U',
               'V', 'V', 'W','W','X',
-              'Y','Y', 'Z', 'K', 'Y']
+              'Y','Y', 'Z', 'K', 'Y'];
 
 BoardController = {
   shuffle : (array) => {
@@ -36,21 +36,25 @@ BoardController = {
 
   checkWord : (req, res, next) => {
 
-    axios.get("https://montanaflynn-spellcheck.p.rapidapi.com/check/", {
+    axios.get("wordsapiv1.p.rapidapi.com", {
       params: {
-        text: req.body.words2check
+        word: req.body.words.join(' ')
       },
       headers: {
-        "X-RapidAPI-Host" : "montanaflynn-spellcheck.p.rapidapi.com",
+        "X-RapidAPI-Host" : "wordsapiv1.p.rapidapi.com",
         "X-RapidAPI-Key" : "b5652f6d96msh5577dff79174606p1c5974jsnfaf97e6e031d"
       }
     })
     .then(response => {
-      console.log(response);
-      if (Object.keys(response.data.corrections).length > 0) {
+      console.log('corrections: ', response.data.corrections);
+      console.log('suggestion: ', response.data.suggestion);
+      console.log('original: ', response.data.original)
+      if (false){//response.data.suggestion != response.data.original) {
         res.locals.errorType = "Mismatch";
+        console.log(response.data.corrections);
         return next(res.locals.errorType);
       }
+      console.log(response.data.original);
       res.locals.words = response.data.original;
       return next();
     })
