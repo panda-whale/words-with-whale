@@ -40,14 +40,14 @@ BoardController = {
     const check = spell.check(req.body.words.join(' '));
     console.log(check);
 
-      if (check.length > 0){ // something was not spelled correctly
-        res.locals.errorType = "Mismatch";
-        return next(res.locals.errorType);
-      }
-      // all checks out!
-      // send new tiles to user
-      res.locals.newTiles = BoardController.getTiles(req.body.usedTiles.length);
-      return next();
+    if (check.length > 0){ // something was not spelled correctly
+      res.locals.errorType = "Mismatch";
+      return next(res.locals.errorType);
+    }
+    // all checks out!
+    // send new tiles to user
+    res.locals.newTiles = BoardController.getTiles(req.body.usedTiles.length);
+    return next();
 
   },
 
