@@ -50,6 +50,7 @@ class App extends Component {
         ...this.state, turn, bench: tiles, gameHasStarted : 1}));
       this.state.socket.on('changeTurn', (turn) => this.setState({...this.state, turn}));
       this.state.socket.on('updateBoard', (board) => this.setState({...this.state, board}));
+
       // functions
       this.boardPlace = this.boardPlace.bind(this);
       this.click2StartGame = this.click2StartGame.bind(this);
@@ -57,7 +58,35 @@ class App extends Component {
       this.pickLetter = this.pickLetter.bind(this);
       this.pass = this.pass.bind(this);
       this.done = this.done.bind(this);
+      this.receiveNewTiles = this.receiveNewTiles.bind(this);
+      this.state.socket.on('newTiles', this.receiveNewTiles);
 
+    }
+    receiveNewTiles(newTiles) {
+
+      console.log('receiving new tiles: ', newTiles);
+
+      let newBench = []
+      // loop through used tiles, and remove from bench.
+      for(let i = 0; i < this.state.bench.length; i++) {
+        let found = false;
+        for(let j = 0; j < this.state.usedTiles.length; j++) {
+          //console.log('benchId: ', this.state.usedTiles[j].benchId);
+          //console.log()
+          if(this.state.usedTiles[j].benchId == i) {
+            found = true;
+          }
+        }
+        if(!found) newBench.push(this.state.bench[i]);
+      }
+      console.log('the value of newBench: ', newBench);
+      // add new tiles to slice of bench and reset used tiles
+      newBench = newBench.concat(newTiles);
+
+      console.log('logging new bench:', newBench);
+
+      return this.setState({...this.state, bench:newBench, usedTiles:[]});
+      // setState
     }
     boardPlace (e) {
       if(this.state.letter.value !== ''){

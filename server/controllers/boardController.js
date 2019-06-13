@@ -1,5 +1,7 @@
 const axios = require ('axios');
 const {Points} = require( '../constants/points');
+const spell = require('spell-checker-js');
+spell.load('en');
 
 const LOBBY = 0;
 const GAME_STARTED = 1;
@@ -35,30 +37,18 @@ BoardController = {
   },
 
   checkWord : (req, res, next) => {
+    const check = spell.check(req.body.words.join(' '));
+    console.log(check);
 
-    axios.get("wordsapiv1.p.rapidapi.com", {
-      params: {
-        word: req.body.words.join(' ')
-      },
-      headers: {
-        "X-RapidAPI-Host" : "wordsapiv1.p.rapidapi.com",
-        "X-RapidAPI-Key" : "b5652f6d96msh5577dff79174606p1c5974jsnfaf97e6e031d"
-      }
-    })
-    .then(response => {
-      console.log('corrections: ', response.data.corrections);
-      console.log('suggestion: ', response.data.suggestion);
-      console.log('original: ', response.data.original)
-      if (false){//response.data.suggestion != response.data.original) {
+      if (check.length > 0){ // something was not spelled correctly
         res.locals.errorType = "Mismatch";
-        console.log(response.data.corrections);
         return next(res.locals.errorType);
       }
-      console.log(response.data.original);
-      res.locals.words = response.data.original;
+      // all checks out!
+      // send new tiles to user
+      res.locals.newTiles = BoardController.getTiles(req.body.usedTiles.length);
       return next();
-    })
-    .catch(error => console.log(error))
+
   },
 
   getGamePhase: () => gamePhase,
