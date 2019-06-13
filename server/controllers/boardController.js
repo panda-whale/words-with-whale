@@ -96,8 +96,6 @@ BoardController = {
     // console.log(sum);
     return next ();
   }
-
-
 };
 
 

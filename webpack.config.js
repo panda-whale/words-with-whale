@@ -19,6 +19,7 @@ module.exports = {
           }
         }
       },
+      {test: /\.(png|jpg|gif|svg)$/,loader: 'url-loader',query: {name: '[name].[ext]?[hash]'}},
       {
         test: /\.scss$/,
         exclude: /(node_modules)/,
@@ -30,7 +31,7 @@ module.exports = {
             loader: 'css-loader',
           },
           {
-            loader: 'sass-loader'
+            loader: 'sass-loader',
           }
         ],
       }

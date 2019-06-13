@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import './Lobby.module.scss';
 
 
-const Lobby = (props) => {
-
-  const players = props.allPlayers.map((ele) =>
-                                    { return <p>{ele}</p>});
+const Lobby = ({allPlayers, click2StartGame}) => {
+  const players = allPlayers.map((ele) => <p className="players">Player: {ele}</p>);
 
   return (
-      <div>
+      <div id="lobby">
+           <h1>Words With Whales</h1>
           <div>
             {players}
           </div>
-          <button onClick={() => {console.log('CLICK');props.click2StartGame();}}>START GAME</button>
+          <button id="start" onClick={click2StartGame}>START GAME</button>
       </div>
-
   )
 }
 

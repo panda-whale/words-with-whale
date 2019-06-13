@@ -9,7 +9,7 @@ const Row = (props) => {
         // const id = `${props.id}, ${i}`
         const rowId = props.id;
         const columnId = i
-        tiles.push(< Tile row={rowId} column={columnId} tile={props.row[i].letter} boardPlace={props.boardPlace} />)
+        tiles.push(< Tile row={rowId} column={columnId} tile={props.row[i].letter} boardPlace={props.boardPlace} color={props.color} />)
     }
   
     return (

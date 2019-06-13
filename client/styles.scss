@@ -1,13 +1,21 @@
 $border: 2px black solid;
+@import url('https://fonts.googleapis.com/css?family=Londrina+Solid&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
 
 
 body {
     width: 100%;
-    // background-color: green;
+    background-color: whitesmoke;
     // height: 100%;
     font-size: 20px;
 }
 
+h1 {
+    font-family: 'Londrina Solid', cursive;
+    font-size: 100px;
+    color: 	#DAA520; 
+    margin: 0 auto;
+}
 
 
 .mainContainer {
@@ -18,9 +26,10 @@ body {
     display: flex;
     justify-content: center;
     width: 70%;
-    height: 600px;
+    height: 80%;
     margin: 0 auto;
-    background-color: white;
+    background-color: lightblue;
+    border-radius: 10px;
 }
 
 #benchContainer {
@@ -51,14 +60,46 @@ body {
 
 .cell {
     margin: 0;
+    height: 100%;
 }
 
-.tiles {
-    width: 78.41px;
-    height: 40px;
+.tileslb {
+    width: 170px;
+    // height: 40px;
+    height: 81.7px;
     margin: 0;
     font-size: 20px;
+    background-color: lightblue;
+    border-radius: 10px;
 }
+
+.tilesy {
+    width: 170px;
+    // height: 40px;
+    height: 81.7px;
+    margin: 0;
+    font-size: 20px;
+    background-color: #FFDF00;
+    border-radius: 10px;
+}
+
+h2 {
+   font-family: 'Londrina Solid', cursive;
+   color: 	#DAA520; 
+}
+
+
+// #start {
+//     padding: 25px 60px;
+//     border-radius: 12px;
+// }
+
+// .players {
+//     font-family: 'Poppins', sans-serif;
+//     font-size: 50px;
+//     color: #ffdb58;
+//     margin: 0;
+// }
 
 
 
