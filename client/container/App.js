@@ -4,12 +4,14 @@ import Board from "../components/Board";
 import Bench from "./Bench";
 import Lobby from './Lobby';
 import openSocket from "socket.io-client";
+import ScoreBoard from '../components/ScoreBoard';
+import './../styles.scss';
 
 
 
-  const ipAddress = "http://192.168.0.97:3000"; // Roy's
-//  const ipAddress = "http://192.168.0.221:3000";
-//const ipAddress = "http://192.168.0.161:3000"; //sam
+//  const ipAddress = "http://192.168.0.97:3000"; // Roy's
+ const ipAddress = "http://192.168.0.221:3000";
+// const ipAddress = "http://192.168.0.161:3000"; //sam
 
 
 
@@ -26,16 +28,16 @@ class App extends Component {
       gameHasStarted: 0,
       bench: [],
       letter: {value : '', index : null},
-      usedTiles: []
+      usedTiles: [],
       }
 
       for (let i =0; i<15; i++) {
         let rowArr = [];
         for (let j=0; j<15; j++) {
           if (i=== 7 && j==7) {
-            rowArr.push({letter:'*', points: 0})
+            rowArr.push({letter:'*', points: 0 })
           } else {
-            rowArr.push({letter: '-', points: 0})
+            rowArr.push({letter: '-', points: 0 })
           }
         }
         this.state.board.push(rowArr);
@@ -107,6 +109,7 @@ class App extends Component {
 
       }
     }
+
     click2StartGame () {
       this.state.socket.emit('gameStart');
     }
@@ -132,9 +135,9 @@ class App extends Component {
         }
         console.log('swapping the letter');
       } else {
-        console.log('setting the letter');
-        console.log(e.target.id);
-        console.log(e.target.id.replace('bench_', ''));
+        // console.log('setting the letter');
+        // console.log(e.target.id);
+        // console.log(e.target.id.replace('bench_', ''));
         this.setState({...this.state, letter: { value: e.target.innerHTML, index: e.target.id.replace('bench_', '')}});
       }
     }
@@ -214,33 +217,31 @@ class App extends Component {
     }
 
     render() {
-        const { board, allPlayers, bench} = this.state;
-        console.log(board)
-        console.log(allPlayers);
-        console.log(this.state.turn);
-        console.log(this.state.gameHasStarted);
+        const { board, allPlayers, bench, backgroundColor } = this.state;
+        // console.log(board)
+        // console.log(allPlayers);
+        // console.log(this.state.turn);
+        // console.log(this.state.gameHasStarted);
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
-            <div>
-                <h1>Words With Whales</h1>
-                {this.state.color &&
-                  <h2>Welcome player {this.state.color}</h2>
-                }
+            <div className="mainContainer">
+                {/* {this.state.color &&
+                  <h2>YOU ARE PLAYER {this.state.color}</h2>
+                } */}
                 {this.state.turn &&
                   <h2>It is player {this.state.turn + '\'s'} turn!</h2>
                 }
-
+                 {/* < ScoreBoard score={score} /> */}
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
+                    <h1 id="game">Words With Whales</h1> 
                     < Board board={board} boardPlace={this.boardPlace}/>
-                  < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} usedTiles={this.state.usedTiles} done={this.done}/>
+                    < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} usedTiles={this.state.usedTiles} done={this.done}/>
                   </div>
                 }
             </div>
         )
     }
-
-
 }
 export default App;
 

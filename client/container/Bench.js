@@ -14,13 +14,13 @@ const Bench = (props) => {
 
 
     return (
-        <div>
-            <div>
+        <div id="benchContainer">
+            <div className="letter">
             {letter}
             </div>
-            <button onClick={() => props.mulligan()}>mull</button>
-            <button onClick={() => props.done()}>done</button>
-            <button onClick={() => props.pass()} disabled={props.color !== props.turn} >pass</button>
+            <button className="button" onClick={() => props.mulligan()}>mull</button>
+            <button className="button" onClick={() => props.done()}>done</button>
+            <button className="button" onClick={() => props.pass()} disabled={props.color !== props.turn} >pass</button>
         </div>
     )
 }

@@ -74,7 +74,7 @@ BoardController = {
     BoardController.shuffle(pool);
     // console.log('this is after forloop', pool.length); this works!!!
     return BoardController.getTiles(7)
-
+  
   },
 
   calculateScore: (req, res, next) => {
@@ -90,8 +90,6 @@ BoardController = {
     // console.log(sum);
     return next ();
   }
-
-
 };
 
 
