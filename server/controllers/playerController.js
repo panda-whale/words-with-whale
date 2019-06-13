@@ -15,7 +15,7 @@ let PlayerController = {
     players[color] = socket;
     socket.emit('color', color);
 
-    socket.on('test', (testdata) => console.log(color + '\'s data is: ' + testdata));
+    socket.on('test', (testdata) => {});
   },
   arrayOfPlayers: () => {
     return Object.entries(players).reduce((acc, ele) => {

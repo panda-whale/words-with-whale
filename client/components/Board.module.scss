@@ -7,8 +7,9 @@
 #boardContainer {
     display: flex;
     justify-content: center;
-    width: 65%;
-    height: 80%;
+    flex-flow: row wrap;
+    height: 65%;
+    width: 80%;
     margin: 0 auto;
     background-color: lightblue;
     border-radius: 10px;
@@ -16,9 +17,14 @@
 
 .cell {
     margin: 0;
-    height: 100%;
+    width: 100%;
+    display: inline-block;
 }
-  
+
+.cell button {
+    display: inline-block;
+  }
+
 @media (min-width: 600px) {
     .tileslb {
         width: 40px;
@@ -28,7 +34,7 @@
         background-color: lightblue;
         border-radius: 10px;
     }
-    
+
     .tilesy {
         width: 40px;
         height: 25px;
@@ -38,7 +44,7 @@
         border-radius: 10px;
     }
 }
-  
+
 @media (min-width: 1200px) {
     .tileslb {
         width: 78.4px;
@@ -48,7 +54,7 @@
         background-color: lightblue;
         border-radius: 10px;
     }
-    
+
     .tilesy {
         width: 78.4px;
         height: 40px;
@@ -62,7 +68,7 @@
 
 
 @media (min-width: 3000px) {
-    
+
     .tileslb {
         width: 170px;
         height: 81.7px;
@@ -71,7 +77,7 @@
         background-color: lightblue;
         border-radius: 10px;
     }
-    
+
     .tilesy {
         width: 170px;
         height: 81.7px;
@@ -81,4 +87,3 @@
         border-radius: 10px;
     }
 }
-
