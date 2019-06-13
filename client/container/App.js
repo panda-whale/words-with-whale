@@ -187,8 +187,9 @@ class App extends Component {
           verticalWord = verticalWord + board[downIndex][tiles[i].boardColId].letter
         }
         // don't push single letter vertical words in the horizontal
-        if(direction != 'horizontal' || verticalWord.length != 1) { // de morgan's law
-          if(!words2check.includes(verticalWord)) words2check.push(verticalWord);
+        if(!(direction === 'horizontal' && verticalWord.length === 1)) { // de morgan's law
+          // don't repeat words and don't insert single letter additions
+          if(!words2check.includes(verticalWord) && verticalWord.length != 1)  words2check.push(verticalWord);
         }
 
         while(--leftIndex >= 0 && board[tiles[i].boardRowId][leftIndex].letter !== '-') { //left
@@ -198,8 +199,8 @@ class App extends Component {
           horizontalWord = horizontalWord + board[tiles[i].boardRowId][rightIndex].letter;
         }
         // don't push single letter horizontal words when vertical
-        if(direction != 'vertical' || horizontalWord.length != 1) {
-          if(!words2check.includes(horizontalWord)) words2check.push(horizontalWord);
+        if(!(direction === 'vertical' && horizontalWord.length === 1)) {
+          if(!words2check.includes(horizontalWord) && horizontalWord.length != 1) words2check.push(horizontalWord);
         }
       }
 
