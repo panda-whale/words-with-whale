@@ -2,14 +2,16 @@ import React from 'react';
 import Letter from '../components/Letter';
 
 const Bench = (props) => {
+
     const letter = [];
+
     for(let i = 0; i < props.bench.length; i++) {
+        // check if bench letter is in use and disable it on display
         const isDisabled = props.usedTiles.reduce((acc, ele) => {return ele.benchId == i ? true : acc}, false);
+
         letter.push(< Letter id={i} letter={props.bench[i].letter} points={props.bench[i].points} pickLetter={props.pickLetter} isDisabled={isDisabled}/>);
-        // console.log('this is the object', props.points)
     }
 
-    // console.log('this is props.bench', props.points);
 
     return (
         <div>

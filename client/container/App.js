@@ -171,13 +171,13 @@ class App extends Component {
         tiles.sort((a, b) => ((+a.boardRowId) - (+b.boardRowId)));
       }
 
-      console.log(tiles);
-      // traverse to be continued...
-
       // don't forget to consider if continue a word or appending to an existing word
       const word = tiles.reduce((acc, ele) => (acc + ele.value), '');
-      console.log(word);
+      console.log(tiles);
 
+      // check the word upwords and downwards
+
+      // check word on backend
       fetch(ipAddress + "/isWord", {
         method: 'POST',
         headers: { 'content-type': 'application/json'},
@@ -190,14 +190,26 @@ class App extends Component {
       })
       .then(response => response.json())
       .then(response => {
+        // if mismatch, reset board state to no used tiles
+        if(response['err'] == 'Mismatch') return this.mismatchReset();
+
         console.log(response);
-        // if response has err key then reset board/bench/app state to remove attempted word
-        // else
       })
       .catch(error => console.log(error));
+    }
 
+    mismatchReset() {
 
-      // check the word upwords and downwards
+      const newBoard = this.state.board.slice(); // may want to do a deep copy.
+      const tiles = this.state.usedTiles.slice();
+
+      for(let i = 0; i < tiles.length; i++) {
+        newBoard[tiles[i].boardRowId][tiles[i].boardColId].letter = '-';
+        newBoard[tiles[i].boardRowId][tiles[i].boardColId].points = 0;
+      }
+
+      // reset board and usedTiles
+      this.setState({...this.state, board: newBoard, usedTiles: []})
 
     }
 
