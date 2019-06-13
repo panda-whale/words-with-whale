@@ -24,16 +24,20 @@ app.use(function (req, res, next) {
 
 
 //Request chain for checking words
-app.post('/isWord', BoardController.checkWord, BoardController.calculateScore, (req, res) => {
-  res.send({score: res.locals.sum});
+app.post('/isWord', BoardController.checkWord, PlayerController.sendNewTiles, (req, res) => {
+  io.emit('updateBoard', req.body.board);
+  PlayerController.changeTurn(io);
+  res.send({message: 'i am success'});
 }); // should receive array of potential words
 
+//////////////////////////////////////////////////////////////////////
+/*
+app.post('/isWord', BoardController.checkWord, BoardController.calculateScore, (req, res) => {
+ res.send({score: res.locals.sum});
+}); // should receive array of potential words
+*/
 
-app.post('/start', (req, res) => {
 
-})
-//console.log(process.NODE_ENV);
-//console.log(process.env);
 if(process.env.NODE_ENV === 'production') {
   // serve index.html in prod mode
   app.get('/', (req, res) => res.sendFile(path.resolve(__dirname+'/../index.html')));
@@ -41,6 +45,11 @@ if(process.env.NODE_ENV === 'production') {
   // serve the bundle
   app.use('/build', express.static(path.join(__dirname, '../build')));
 }
+
+app.use((err, req, res, next) => {
+  console.log("i caught a baddie");
+  return res.status(500).send({err})
+})
 
 
 

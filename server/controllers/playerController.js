@@ -33,10 +33,15 @@ let PlayerController = {
   changeTurn: (io) => {
     const allPlayers = PlayerController.arrayOfPlayers();
     const i = allPlayers.indexOf(turn);
-    turn = allPlayers[(i+1) % allPlayers.length]; 
+    turn = allPlayers[(i+1) % allPlayers.length];
     io.emit('changeTurn', turn)
   },
-  
+
+  sendNewTiles: (req, res, next) => {
+    players[req.body.color].emit('newTiles', res.locals.newTiles)
+    return next();
+  }
+
 };
 
 module.exports = PlayerController;

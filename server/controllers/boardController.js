@@ -1,5 +1,7 @@
 const axios = require ('axios');
 const {Points} = require( '../constants/points');
+const spell = require('spell-checker-js');
+spell.load('en');
 
 const LOBBY = 0;
 const GAME_STARTED = 1;
@@ -24,7 +26,7 @@ const pool = ['A','A','A','A','A',
               'T','T','T','T','T',
               'T','U','U','U','U',
               'V', 'V', 'W','W','X',
-              'Y','Y', 'Z', 'K', 'Y']
+              'Y','Y', 'Z', 'K', 'Y'];
 
 BoardController = {
   shuffle : (array) => {
@@ -35,26 +37,18 @@ BoardController = {
   },
 
   checkWord : (req, res, next) => {
+    const check = spell.check(req.body.words.join(' '));
+    console.log(check);
 
-    axios.get("https://montanaflynn-spellcheck.p.rapidapi.com/check/", {
-      params: {
-        text: req.body.words2check
-      },
-      headers: {
-        "X-RapidAPI-Host" : "montanaflynn-spellcheck.p.rapidapi.com",
-        "X-RapidAPI-Key" : "b5652f6d96msh5577dff79174606p1c5974jsnfaf97e6e031d"
-      }
-    })
-    .then(response => {
-      console.log(response);
-      if (Object.keys(response.data.corrections).length > 0) {
-        res.locals.errorType = "Mismatch";
-        return next(res.locals.errrorType);
-      }
-      res.locals.words = response.data.original;
-      return next();
-    })
-    .catch(error => console.log(error))
+    if (check.length > 0){ // something was not spelled correctly
+      res.locals.errorType = "Mismatch";
+      return next(res.locals.errorType);
+    }
+    // all checks out!
+    // send new tiles to user
+    res.locals.newTiles = BoardController.getTiles(req.body.usedTiles.length);
+    return next();
+
   },
 
   getGamePhase: () => gamePhase,
@@ -89,7 +83,7 @@ BoardController = {
     words = words.split('');
     // console.log('this is the words', words);
     let sum = 0;
-    words.forEach(el => { 
+    words.forEach(el => {
       sum += Points[el.toUpperCase()]
     })
     res.locals.sum = sum;
