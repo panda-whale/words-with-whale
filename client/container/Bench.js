@@ -3,7 +3,7 @@ import Letter from '../components/Letter';
 
 const Bench = (props) => {
     const letter = [];
-    for(let i = 0; i < 7; i++) {
+    for(let i = 0; i < props.bench.length; i++) {
         const isDisabled = props.usedTiles.reduce((acc, ele) => {return ele.benchId == i ? true : acc}, false);
         letter.push(< Letter id={i} letter={props.bench[i].letter} points={props.bench[i].points} pickLetter={props.pickLetter} isDisabled={isDisabled}/>);
         // console.log('this is the object', props.points)
