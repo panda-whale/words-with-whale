@@ -5,7 +5,7 @@ const Letter = (props) => {
 
     return (
         <div>
-          <button className="bench" onClick={props.pickLetter} id={'bench_' + props.id}>{props.letter}</button>
+          <button className="bench" onClick={props.pickLetter} id={'bench_' + props.id} disabled={props.isDisabled}>{props.letter}</button>
           <p className="points">{props.points}</p>
         </div>
     )
