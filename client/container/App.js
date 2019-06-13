@@ -9,10 +9,9 @@ import './../styles.scss';
 
 
 
-//  const ipAddress = "http://192.168.0.97:3000"; // Roy's
- const ipAddress = "http://192.168.0.221:3000";
+const ipAddress = "http://192.168.0.97:3000"; // Roy's
+ //const ipAddress = "http://192.168.0.221:3000"; //Jay's
 // const ipAddress = "http://192.168.0.161:3000"; //sam
-
 
 
 class App extends Component {
@@ -31,10 +30,10 @@ class App extends Component {
       usedTiles: [],
       }
 
-      for (let i =0; i<15; i++) {
+      for (let i = 0; i < 15; i++) {
         let rowArr = [];
-        for (let j=0; j<15; j++) {
-          if (i=== 7 && j==7) {
+        for (let j = 0; j < 15; j++) {
+          if (i === 7 && j == 7) {
             rowArr.push({letter:'*', points: 0 })
           } else {
             rowArr.push({letter: '-', points: 0 })
@@ -66,8 +65,6 @@ class App extends Component {
     }
     receiveNewTiles(newTiles) {
 
-      console.log('receiving new tiles: ', newTiles);
-
       let newBench = []
       // loop through used tiles, and remove from bench.
       for(let i = 0; i < this.state.bench.length; i++) {
@@ -81,11 +78,8 @@ class App extends Component {
         }
         if(!found) newBench.push(this.state.bench[i]);
       }
-      console.log('the value of newBench: ', newBench);
       // add new tiles to slice of bench and reset used tiles
       newBench = newBench.concat(newTiles);
-
-      console.log('logging new bench:', newBench);
 
       return this.setState({...this.state, bench:newBench, usedTiles:[]});
       // setState
@@ -93,8 +87,7 @@ class App extends Component {
     boardPlace (e) {
       if(this.state.letter.value !== ''){
         let num = e.target.id.split(',');
-        // let newBoard = this.state.board.slice();
-        // console.log(this.state.board[num[0]][num[1]])
+
         let cord = this.state.board.slice();
         if(cord[num[0]][num[1]].letter === '-' || cord[num[0]][num[1]].letter === '*') {
           cord[num[0]][num[1]].letter = this.state.letter.value;
@@ -104,7 +97,6 @@ class App extends Component {
           newUsedTiles.push({value: this.state.letter.value, benchId: this.state.letter.index, boardRowId: num[0], boardColId: num[1]});
 
           this.setState({...this.state, board:cord, letter:{value : '', index : null}, usedTiles: newUsedTiles});
-          // this works
         }
 
       }
@@ -115,15 +107,11 @@ class App extends Component {
     }
 
     click2Mulligan () {
-      // we need to send back all of state.bench to server
-      // console.log('this is hittting')
       this.state.socket.emit('getTiles', {b: this.state.bench, c:this.state.color});
     }
 
     pickLetter (e) {
       if(this.state.letter.value !== '') {
-        // click on board
-
         // click on bench
         //want to swap with this one.
         if(e.target.id.includes('bench_')) {
@@ -147,26 +135,76 @@ class App extends Component {
     }
 
     done() {
+      // if center is still a star, you must place on the star!
+      if(this.state.board[7][7].letter === '*') return this.mismatchReset();
+      // did not place anything
+      if(this.state.usedTiles.length === 0) return;
 
       const tiles = this.state.usedTiles;
 
-      if(tiles.length === 0) return;
-
+      // check tiles were all placed on same row or column
       let direction;
       // arrange tiles in order
-      // check if horizontal
+      // check direction
+      console.log('before direction check: ', tiles);
       if(tiles.length > 1) {
         let j = tiles[0].boardColId;
         for(let i = 1; i < tiles.length; i++) {
-          if(tiles[i].boardColId !== j) {//not vertical
+          if(tiles[i].boardColId != j) {//not vertical
             direction = 'horizontal';
             break;
           } else {
             direction = 'vertical'
           }
         }
+        // confirm vertical for no randomly placed piece
+        if(direction == 'vertical') {
+          for(let i = 1; i < tiles.length; i++) {
+            if(tiles[0].boardColId !== tiles[i].boardColId){
+              console.log('your word does not connect');
+              return this.mismatchReset();
+            }
+          }
+        }
       }
 
+      let words2check = [];
+      const board = this.state.board;
+
+      // for each used tile, generate horizontal and vertical word from that tile.
+      for(let i = 0; i < tiles.length; i++){
+        let verticalWord = tiles[i].value;
+        let horizontalWord = tiles[i].value;
+
+        let upIndex = tiles[i].boardRowId;
+        let downIndex = tiles[i].boardRowId;
+        let leftIndex = tiles[i].boardColId;
+        let rightIndex = tiles[i].boardColId;
+        while(--upIndex >= 0 && board[upIndex][tiles[i].boardColId].letter !== '-' ) { //up
+          verticalWord = board[upIndex][tiles[i].boardColId].letter + verticalWord;
+        }
+        while(++downIndex < 15 && board[downIndex][tiles[i].boardColId].letter !== '-' ) { //down
+          verticalWord = verticalWord + board[downIndex][tiles[i].boardColId].letter
+        }
+        // don't push single letter vertical words in the horizontal
+        if(direction != 'horizontal' || verticalWord.length != 1) { // de morgan's law
+          if(!words2check.includes(verticalWord)) words2check.push(verticalWord);
+        }
+
+        while(--leftIndex >= 0 && board[tiles[i].boardRowId][leftIndex].letter !== '-') { //left
+          horizontalWord = board[tiles[i].boardRowId][leftIndex].letter + horizontalWord;
+        }
+        while(++rightIndex < 15 && board[tiles[i].boardRowId][rightIndex].letter !== '-') { //right
+          horizontalWord = horizontalWord + board[tiles[i].boardRowId][rightIndex].letter;
+        }
+        // don't push single letter horizontal words when vertical
+        if(direction != 'vertical' || horizontalWord.length != 1) {
+          if(!words2check.includes(horizontalWord)) words2check.push(horizontalWord);
+        }
+      }
+
+      console.log('the words 2 check are: ', words2check);
+      /*
       //if horizontal, sort by boardColId, else sort by boardRowId
       if(direction == 'horizontal') {
         tiles.sort((a, b) => ((+a.boardColId) - (+b.boardColId)));
@@ -177,15 +215,13 @@ class App extends Component {
       // don't forget to consider if continue a word or appending to an existing word
       const word = tiles.reduce((acc, ele) => (acc + ele.value), '');
       console.log(tiles);
-
-      // check the word upwords and downwards
-
+      */
       // check word on backend
       fetch(ipAddress + "/isWord", {
         method: 'POST',
         headers: { 'content-type': 'application/json'},
         body: JSON.stringify({
-          words: [word],
+          words: words2check,
           color: this.state.color,
           usedTiles: tiles,
           board: this.state.board,
@@ -217,11 +253,8 @@ class App extends Component {
     }
 
     render() {
-        const { board, allPlayers, bench, backgroundColor } = this.state;
-        // console.log(board)
-        // console.log(allPlayers);
-        // console.log(this.state.turn);
-        // console.log(this.state.gameHasStarted);
+        const { board, allPlayers, bench } = this.state;
+
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
             <div className="mainContainer">
@@ -234,7 +267,7 @@ class App extends Component {
                  {/* < ScoreBoard score={score} /> */}
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
-                    <h1 id="game">Words With Whales</h1> 
+                    <h1 id="game">Words With Whales</h1>
                     < Board board={board} boardPlace={this.boardPlace}/>
                     < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} usedTiles={this.state.usedTiles} done={this.done}/>
                   </div>
