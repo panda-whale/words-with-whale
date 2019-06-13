@@ -28,6 +28,12 @@ app.post('/isWord', BoardController.checkWord,  (req, res) => {
   res.send();
 }); // should receive array of potential words
 
+//////////////////////////////////////////////////////////////////////
+/*
+app.post('/isWord', BoardController.checkWord, BoardController.calculateScore, (req, res) => {
+ res.send({score: res.locals.sum});
+}); // should receive array of potential words
+*/
 
 app.post('/start', (req, res) => {
 

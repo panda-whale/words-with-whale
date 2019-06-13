@@ -7,9 +7,9 @@ import openSocket from "socket.io-client";
 
 
 
-//  const ipAddress = "http://192.168.0.97:3000"; // Roy's
+  const ipAddress = "http://192.168.0.97:3000"; // Roy's
 //  const ipAddress = "http://192.168.0.221:3000";
-const ipAddress = "http://192.168.0.161:3000"; //sam
+//const ipAddress = "http://192.168.0.161:3000"; //sam
 
 
 
@@ -56,6 +56,7 @@ class App extends Component {
       this.click2Mulligan = this.click2Mulligan.bind(this);
       this.pickLetter = this.pickLetter.bind(this);
       this.pass = this.pass.bind(this);
+      this.done = this.done.bind(this);
 
     }
     boardPlace (e) {
@@ -66,17 +67,16 @@ class App extends Component {
         let cord = this.state.board.slice();
         if(cord[num[0]][num[1]].letter === '-' || cord[num[0]][num[1]].letter === '*') {
           cord[num[0]][num[1]].letter = this.state.letter.value;
-          cord[num[0]][num[1]].points = this.state.letter.points;
+          cord[num[0]][num[1]].points = this.state.bench[this.state.letter.index].points; //spaghetti
 
-          this.setState({...this.state, board:cord, letter:{value : '', index : null}});
+          const newUsedTiles = this.state.usedTiles.slice();
+          newUsedTiles.push({value: this.state.letter.value, benchId: this.state.letter.index, boardRowId: num[0], boardColId: num[1]});
+
+          this.setState({...this.state, board:cord, letter:{value : '', index : null}, usedTiles: newUsedTiles});
           // this works
-        } 
+        }
 
       }
-
-      // else if (e.target.id.includes(',') {
-          
-      // }
     }
     click2StartGame () {
       this.state.socket.emit('gameStart');
@@ -100,7 +100,7 @@ class App extends Component {
           const newBench = this.state.bench;
           [newBench[letterIndex], newBench[swapId]] = [newBench[swapId], newBench[letterIndex]];
           return this.setState({...this.state, letter:{value : '', index : null}, bench: newBench})
-        } 
+        }
         console.log('swapping the letter');
       } else {
         console.log('setting the letter');
@@ -113,6 +113,48 @@ class App extends Component {
     pass () {
       this.state.socket.emit('pass');
     }
+
+    done() {
+
+      const tiles = this.state.usedTiles;
+
+      if(tiles.length === 0) return;
+
+      let direction;
+      // arrange tiles in order
+      // check if horizontal
+      if(tiles.length > 1) {
+        let j = tiles[0].boardColId;
+        for(let i = 1; i < tiles.length; i++) {
+          if(tiles[i].boardColId !== j) {//not vertical
+            direction = 'horizontal';
+            break;
+          } else {
+            direction = 'vertical'
+          }
+        }
+      }
+
+      //if horizontal, sort by boardColId, else sort by boardRowId
+      if(direction == 'horizontal') {
+        tiles.sort((a, b) => ((+a.boardColId) - (+b.boardColId)));
+      } else {
+        tiles.sort((a, b) => ((+a.boardRowId) - (+b.boardRowId)));
+      }
+
+      console.log(tiles);
+      // traverse to be continued...
+
+      // don't forget to consider if continue a word or appending to an existing word
+      const word = tiles.reduce((acc, ele) => (acc + ele.value), '');
+      console.log(word);
+
+      this.socket.
+
+      // check the word upwords and downwards
+
+    }
+
     render() {
         const { board, allPlayers, bench} = this.state;
         console.log(board)
@@ -133,7 +175,7 @@ class App extends Component {
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
                     < Board board={board} boardPlace={this.boardPlace}/>
-                    < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} />
+                  < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} usedTiles={this.state.usedTiles} done={this.done}/>
                   </div>
                 }
             </div>
