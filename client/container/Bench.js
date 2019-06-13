@@ -1,5 +1,6 @@
 import React from 'react';
 import Letter from '../components/Letter';
+import './Bench.module.scss';
 
 const Bench = (props) => {
 

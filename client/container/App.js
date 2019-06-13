@@ -228,13 +228,13 @@ class App extends Component {
                 {/* {this.state.color &&
                   <h2>YOU ARE PLAYER {this.state.color}</h2>
                 } */}
-                {this.state.turn &&
-                  <h2>It is player {this.state.turn + '\'s'} turn!</h2>
-                }
                  {/* < ScoreBoard score={score} /> */}
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
-                  <div>
+                  <div id="board">
                     <h1 id="game">Words With Whales</h1> 
+                    {this.state.turn &&
+                      <h2>It is player {this.state.turn + '\'s'} turn!</h2>
+                    }
                     < Board board={board} boardPlace={this.boardPlace}/>
                     < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} usedTiles={this.state.usedTiles} done={this.done}/>
                   </div>
