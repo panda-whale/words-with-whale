@@ -132,7 +132,7 @@ class App extends Component {
                  {/* < ScoreBoard score={score} /> */}
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div>
-                  <h1>Words With Whales</h1>
+                  <h1 id="game">Words With Whales</h1>
                     < Board board={board} boardPlace={this.boardPlace} color={backgroundColor} />
                     < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} />
                   </div>

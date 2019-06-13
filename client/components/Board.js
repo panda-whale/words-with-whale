@@ -1,5 +1,6 @@
 import React from "react";
 import Row from "./Row";
+import './Board.module.scss';
 
 const Board = props => {
   const rows = [];

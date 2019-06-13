@@ -1,0 +1,85 @@
+
+#boardContainer {
+    display: flex;
+    justify-content: center;
+    width: 65%;
+    height: 80%;
+    margin: 0 auto;
+    background-color: lightblue;
+    border-radius: 10px;
+}
+
+.cell {
+    margin: 0;
+    height: 100%;
+}
+
+// @media (min-width: 300px) {
+//     .image {
+//       width: 140px;
+//     }
+//   }
+  
+@media (min-width: 600px) {
+    .tileslb {
+        width: 40px;
+        height: 25px;
+        margin: 0;
+        font-size: 20px;
+        background-color: lightblue;
+        border-radius: 10px;
+    }
+    
+    .tilesy {
+        width: 40px;
+        height: 25px;
+        margin: 0;
+        font-size: 20px;
+        background-color: #FFDF00;
+        border-radius: 10px;
+    }
+}
+  
+@media (min-width: 1200px) {
+    .tileslb {
+        width: 78.4px;
+        height: 40px;
+        margin: 0;
+        font-size: 20px;
+        background-color: lightblue;
+        border-radius: 10px;
+    }
+    
+    .tilesy {
+        width: 78.4px;
+        height: 40px;
+        margin: 0;
+        font-size: 20px;
+        background-color: #FFDF00;
+        border-radius: 10px;
+    }
+}
+
+
+
+@media (min-width: 3000px) {
+    
+    .tileslb {
+        width: 170px;
+        height: 81.7px;
+        margin: 0;
+        font-size: 20px;
+        background-color: lightblue;
+        border-radius: 10px;
+    }
+    
+    .tilesy {
+        width: 170px;
+        height: 81.7px;
+        margin: 0;
+        font-size: 20px;
+        background-color: #FFDF00;
+        border-radius: 10px;
+    }
+}
+
