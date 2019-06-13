@@ -24,10 +24,10 @@ app.use(function (req, res, next) {
 
 
 //Request chain for checking words
-app.post('/isWord', BoardController.checkWord, PlayerController.sendNewTiles, (req, res) => {
+app.post('/isWord', BoardController.checkWord, BoardController.calculateScore, PlayerController.sendNewTiles, (req, res) => {
   io.emit('updateBoard', req.body.board);
   PlayerController.changeTurn(io);
-  res.send({message: 'i am success'});
+  res.send({message: 'i am success', score: res.locals.sum });
 }); // should receive array of potential words
 
 //////////////////////////////////////////////////////////////////////
@@ -48,7 +48,13 @@ if(process.env.NODE_ENV === 'production') {
 
 app.use((err, req, res, next) => {
   console.log("i caught a baddie");
-  return res.status(500).send({err})
+  let type = res.locals.errorType;
+  switch(type) {
+    case 'Mismatch':
+      return res.status(500).send({err})
+    default:
+
+  }
 })
 
 

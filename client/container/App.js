@@ -28,6 +28,7 @@ class App extends Component {
       bench: [],
       letter: {value : '', index : null},
       usedTiles: [],
+      score: {'red': 0, 'green': 0, 'blue': 0, 'yellow': 0}
       }
 
       for (let i = 0; i < 15; i++) {
@@ -61,7 +62,7 @@ class App extends Component {
       this.done = this.done.bind(this);
       this.receiveNewTiles = this.receiveNewTiles.bind(this);
       this.state.socket.on('newTiles', this.receiveNewTiles);
-
+      this.updateScore = this.updateScore.bind(this);
     }
     receiveNewTiles(newTiles) {
 
@@ -133,6 +134,13 @@ class App extends Component {
     pass () {
       this.state.socket.emit('pass');
     }
+    updateScore(response) {
+      let scoreObj = Object.assign({}, this.state.score);
+      let newScore = this.state.score[this.state.color] + response.score;
+      scoreObj[this.state.color] = newScore;
+      this.setState({...this.state, score: scoreObj });
+      console.log('this workedddd', this.state.score);
+    }
 
     done() {
       // if center is still a star, you must place on the star!
@@ -202,8 +210,7 @@ class App extends Component {
           if(!words2check.includes(horizontalWord)) words2check.push(horizontalWord);
         }
       }
-
-      console.log('the words 2 check are: ', words2check);
+      // console.log('the words 2 check are: ', words2check);
       /*
       //if horizontal, sort by boardColId, else sort by boardRowId
       if(direction == 'horizontal') {
@@ -211,7 +218,6 @@ class App extends Component {
       } else {
         tiles.sort((a, b) => ((+a.boardRowId) - (+b.boardRowId)));
       }
-
       // don't forget to consider if continue a word or appending to an existing word
       const word = tiles.reduce((acc, ele) => (acc + ele.value), '');
       console.log(tiles);
@@ -231,8 +237,8 @@ class App extends Component {
       .then(response => {
         // if mismatch, reset board state to no used tiles
         if(response['err'] == 'Mismatch') return this.mismatchReset();
-
-        console.log(response);
+        this.updateScore(response);
+        // this.setState({...this.state, score: })
       })
       .catch(error => console.log(error));
     }
@@ -253,7 +259,7 @@ class App extends Component {
     }
 
     render() {
-        const { board, allPlayers, bench } = this.state;
+        const { board, allPlayers, bench, score } = this.state;
 
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
@@ -268,6 +274,7 @@ class App extends Component {
                     {this.state.turn &&
                       <h2>It is player {this.state.turn + '\'s'} turn!</h2>
                     }
+                    < ScoreBoard score={score} />
                     < Board board={board} boardPlace={this.boardPlace}/>
                     < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} usedTiles={this.state.usedTiles} done={this.done}/>
                   </div>

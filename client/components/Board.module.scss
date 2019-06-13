@@ -9,7 +9,7 @@
     justify-content: center;
     flex-flow: row wrap;
     height: 65%;
-    width: 80%;
+    width: 70%;
     margin: 0 auto;
     background-color: lightblue;
     border-radius: 10px;
@@ -25,21 +25,24 @@
     display: inline-block;
   }
 
-@media (min-width: 600px) {
+@media (max-width: 850px) {
+    #boardContainer {
+        width: 80%;
+    }
     .tileslb {
-        width: 40px;
-        height: 25px;
+        width: 20px;
+        height: 20px;
         margin: 0;
-        font-size: 20px;
+        font-size: 15px;
         background-color: lightblue;
         border-radius: 10px;
     }
 
     .tilesy {
-        width: 40px;
-        height: 25px;
+        width: 20px;
+        height: 20px;
         margin: 0;
-        font-size: 20px;
+        font-size: 15px;
         background-color: #FFDF00;
         border-radius: 10px;
     }
