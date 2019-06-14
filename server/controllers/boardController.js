@@ -37,16 +37,21 @@ BoardController = {
   },
 
   checkWord : (req, res, next) => {
+    // console.log(req.body.words);
     const check = spell.check(req.body.words.join(' '));
-    console.log(check);
+    console.log('this is chekc', check);
 
+    console.log(check.length)
     if (check.length > 0){ // something was not spelled correctly
       res.locals.errorType = "Mismatch";
       return next(res.locals.errorType);
     }
+    // console.log('passed it')
     // all checks out!
     // send new tiles to user
     res.locals.newTiles = BoardController.getTiles(req.body.usedTiles.length);
+    // console.log(res.locals.newTiles)
+
     return next();
 
   },
@@ -78,16 +83,17 @@ BoardController = {
   },
 
   calculateScore: (req, res, next) => {
-    // console.log(res.locals.words)
-    let words = res.locals.words.replace(/\s+/g, '');
+    // console.log(req.body.words)
+    let words = req.body.words.join('');
     words = words.split('');
     // console.log('this is the words', words);
+
     let sum = 0;
     words.forEach(el => {
       sum += Points[el.toUpperCase()]
     })
     res.locals.sum = sum;
-    // console.log(sum);
+    // console.log('this is the calculated sum', sum);
     return next ();
   }
 };
