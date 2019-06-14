@@ -5,7 +5,7 @@ const ScoreBoard = (props) => {
     const colorsArr = Object.keys(props.score);
     const scoresArr = Object.values(props.score);
     for(let i=0; i<scoresArr.length; i++) {
-        scoreBoardP.push(<span className="score">{colorsArr[i]} : {scoresArr[i]}</span>)
+        scoreBoardP.push(<span className="score">{(i==0 ? '| ' : '') + colorsArr[i]} : {scoresArr[i] + '\t'} | </span>)
     }
     return (
         <div id="scoreBoard">

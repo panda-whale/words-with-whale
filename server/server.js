@@ -26,6 +26,7 @@ app.use(function (req, res, next) {
 //Request chain for checking words
 app.post('/isWord', BoardController.checkWord, BoardController.calculateScore, PlayerController.sendNewTiles, (req, res) => {
   io.emit('updateBoard', req.body.board);
+  io.emit('addPoints', {player: req.body.color, points: res.locals.sum})
   PlayerController.changeTurn(io);
   res.send({message: 'i am success', score: res.locals.sum });
 }); // should receive array of potential words

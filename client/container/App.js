@@ -9,8 +9,8 @@ import './../styles.scss';
 
 
 
-// const ipAddress = "http://192.168.0.97:3000"; // Roy's
- const ipAddress = "http://192.168.0.221:3000"; //Jay's
+ const ipAddress = "http://192.168.0.97:3000"; // Roy's
+ //const ipAddress = "http://192.168.0.221:3000"; //Jay's
 // const ipAddress = "http://192.168.0.161:3000"; //sam
 
 
@@ -28,6 +28,7 @@ class App extends Component {
       bench: [],
       letter: {value : '', index : null},
       usedTiles: [],
+      hasFirstWord: false,
       score: {'red': 0, 'green': 0, 'blue': 0, 'yellow': 0}
       }
 
@@ -35,9 +36,9 @@ class App extends Component {
         let rowArr = [];
         for (let j = 0; j < 15; j++) {
           if (i === 7 && j == 7) {
-            rowArr.push({letter:'*', points: 0 })
+            rowArr.push({letter:'*', points: 0 });
           } else {
-            rowArr.push({letter: '-', points: 0 })
+            rowArr.push({letter: '-', points: 0 });
           }
         }
         this.state.board.push(rowArr);
@@ -51,7 +52,9 @@ class App extends Component {
       this.state.socket.on('initGame', ({tiles, turn}) => this.setState({
         ...this.state, turn, bench: tiles, gameHasStarted : 1}));
       this.state.socket.on('changeTurn', (turn) => this.setState({...this.state, turn}));
-      this.state.socket.on('updateBoard', (board) => this.setState({...this.state, board}));
+      this.state.socket.on('updateBoard', (board) => this.setState({...this.state, board, hasFirstWord:true}));
+      this.updateScore = this.updateScore.bind(this);
+      this.state.socket.on('addPoints', this.updateScore);
 
       // functions
       this.boardPlace = this.boardPlace.bind(this);
@@ -85,23 +88,48 @@ class App extends Component {
       return this.setState({...this.state, bench:newBench, usedTiles:[]});
       // setState
     }
-    boardPlace (e) {
-      if(this.state.letter.value !== ''){
-        let num = e.target.id.split(',');
 
-        let cord = this.state.board.slice();
-        if(cord[num[0]][num[1]].letter === '-' || cord[num[0]][num[1]].letter === '*') {
+    boardPlace (e) {
+      let num = e.target.id.split(',');
+
+      // can place letter on board
+      let cord = this.state.board.slice();
+      const newUsedTiles = this.state.usedTiles.slice();
+
+      console.log(['-','*'].includes(this.state.board[num[0]][num[1]].letter))
+      if(this.state.letter.value !== '' && ['-','*'].includes(this.state.board[num[0]][num[1]].letter)){
+        // clicking board to place letter
+
           cord[num[0]][num[1]].letter = this.state.letter.value;
           cord[num[0]][num[1]].points = this.state.bench[this.state.letter.index].points; //spaghetti
 
-          const newUsedTiles = this.state.usedTiles.slice();
           newUsedTiles.push({value: this.state.letter.value, benchId: this.state.letter.index, boardRowId: num[0], boardColId: num[1]});
+
+          this.setState({...this.state, board:cord, letter:{value : '', index : null}, usedTiles: newUsedTiles});
+        } else if (!['-','*'].includes(cord[num[0]][num[1]].letter)){ //clicking board to get letter back to bench
+          //check that letter is in my usedTiles
+          let found = false;
+          let index = -1;
+          console.log('searching usedtiles for this character')
+          for(let i = 0; i < newUsedTiles.length; i++) {
+            if(newUsedTiles[i].boardRowId == num[0] && newUsedTiles[i].boardColId == num[1]){
+              found = true;
+              index = i;
+              break;
+            }
+          }
+          console.log('was it found? ', found);
+          if(!found) return;
+
+          cord[num[0]][num[1]].letter = num[0] == 7 && num[1] == 7 ? '*' : '-';
+          cord[num[0]][num[1]].points = 0;
+          newUsedTiles.splice(index, 1);
 
           this.setState({...this.state, board:cord, letter:{value : '', index : null}, usedTiles: newUsedTiles});
         }
 
       }
-    }
+
 
     click2StartGame () {
       this.state.socket.emit('gameStart');
@@ -134,12 +162,14 @@ class App extends Component {
     pass () {
       this.state.socket.emit('pass');
     }
+
     updateScore(response) {
+      console.log(response);
       let scoreObj = Object.assign({}, this.state.score);
-      let newScore = this.state.score[this.state.color] + response.score;
-      scoreObj[this.state.color] = newScore;
+      let newScore = this.state.score[response.player] + response.points;
+      scoreObj[response.player] = newScore;
       this.setState({...this.state, score: scoreObj });
-      console.log('this workedddd', this.state.score);
+      //console.log('this workedddd', this.state.score); //tea right
     }
 
     done() {
@@ -211,7 +241,15 @@ class App extends Component {
           if(!words2check.includes(horizontalWord) && horizontalWord.length != 1) words2check.push(horizontalWord);
         }
       }
-      // console.log('the words 2 check are: ', words2check);
+
+      console.log('the words 2 check are: ', words2check);
+
+      // check that each word is longer than the number of tiles placed
+      // preventing user from placing words in different places
+      if(this.state.hasFirstWord)
+      for(let i = 0; i < words2check.length; i++) {
+        if(words2check[i].length < tiles.length + 1) return this.mismatchReset();
+      }
       /*
       //if horizontal, sort by boardColId, else sort by boardRowId
       if(direction == 'horizontal') {
@@ -238,7 +276,7 @@ class App extends Component {
       .then(response => {
         // if mismatch, reset board state to no used tiles
         if(response['err'] == 'Mismatch') return this.mismatchReset();
-        this.updateScore(response);
+        //this.updateScore(response);
         // this.setState({...this.state, score: })
       })
       .catch(error => console.log(error));
@@ -265,18 +303,18 @@ class App extends Component {
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
             <div className="mainContainer">
-                {/* {this.state.color &&
-                  <h2>YOU ARE PLAYER {this.state.color}</h2>
-                } */}
-                 {/* < ScoreBoard score={score} /> */}
+                {this.state.color &&
+                  <h2>Welcome player {this.state.color}!</h2>
+                }
+
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
                   <div id="board">
-                    <h1 id="game">Words With Whales</h1> 
+                    <h1 id="game">Words With Whales</h1>
                     {this.state.turn &&
                       <h2>It is player {this.state.turn + '\'s'} turn!</h2>
                     }
                     < ScoreBoard score={score} />
-                    < Board board={board} boardPlace={this.boardPlace}/>
+                    < Board board={board} boardPlace={this.boardPlace} isMyTurn={this.state.color == this.state.turn}/>
                     < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} usedTiles={this.state.usedTiles} done={this.done}/>
                   </div>
                 }
