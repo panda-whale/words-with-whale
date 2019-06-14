@@ -9,7 +9,7 @@ import './../styles.scss';
 
 
 
-const ipAddress = "http://192.168.0.97:3000"; // Roy's
+ const ipAddress = "http://192.168.0.97:3000"; // Roy's
  //const ipAddress = "http://192.168.0.221:3000"; //Jay's
 // const ipAddress = "http://192.168.0.161:3000"; //sam
 
@@ -29,6 +29,7 @@ class App extends Component {
       letter: {value : '', index : null},
       usedTiles: [],
       hasFirstWord: false,
+      score: {'red': 0, 'green': 0, 'blue': 0, 'yellow': 0}
       }
 
       for (let i = 0; i < 15; i++) {
@@ -52,6 +53,8 @@ class App extends Component {
         ...this.state, turn, bench: tiles, gameHasStarted : 1}));
       this.state.socket.on('changeTurn', (turn) => this.setState({...this.state, turn}));
       this.state.socket.on('updateBoard', (board) => this.setState({...this.state, board, hasFirstWord:true}));
+      this.updateScore = this.updateScore.bind(this);
+      this.state.socket.on('addPoints', this.updateScore);
 
       // functions
       this.boardPlace = this.boardPlace.bind(this);
@@ -62,7 +65,7 @@ class App extends Component {
       this.done = this.done.bind(this);
       this.receiveNewTiles = this.receiveNewTiles.bind(this);
       this.state.socket.on('newTiles', this.receiveNewTiles);
-
+      this.updateScore = this.updateScore.bind(this);
     }
     receiveNewTiles(newTiles) {
 
@@ -160,6 +163,15 @@ class App extends Component {
       this.state.socket.emit('pass');
     }
 
+    updateScore(response) {
+      console.log(response);
+      let scoreObj = Object.assign({}, this.state.score);
+      let newScore = this.state.score[response.player] + response.points;
+      scoreObj[response.player] = newScore;
+      this.setState({...this.state, score: scoreObj });
+      //console.log('this workedddd', this.state.score); //tea right
+    }
+
     done() {
       // if center is still a star, you must place on the star!
       if(this.state.board[7][7].letter === '*') return this.mismatchReset();
@@ -245,7 +257,6 @@ class App extends Component {
       } else {
         tiles.sort((a, b) => ((+a.boardRowId) - (+b.boardRowId)));
       }
-
       // don't forget to consider if continue a word or appending to an existing word
       const word = tiles.reduce((acc, ele) => (acc + ele.value), '');
       console.log(tiles);
@@ -265,8 +276,8 @@ class App extends Component {
       .then(response => {
         // if mismatch, reset board state to no used tiles
         if(response['err'] == 'Mismatch') return this.mismatchReset();
-
-        console.log(response);
+        //this.updateScore(response);
+        // this.setState({...this.state, score: })
       })
       .catch(error => console.log(error));
     }
@@ -287,7 +298,7 @@ class App extends Component {
     }
 
     render() {
-        const { board, allPlayers, bench } = this.state;
+        const { board, allPlayers, bench, score } = this.state;
 
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
@@ -295,14 +306,15 @@ class App extends Component {
                 {this.state.color &&
                   <h2>Welcome player {this.state.color}!</h2>
                 }
-                {this.state.turn &&
-                  <h2>It is player {this.state.turn + '\'s'} turn!</h2>
-                }
-                 {/* < ScoreBoard score={score} /> */}
+
                 { this.state.gameHasStarted === 0 ? <Lobby click2StartGame={this.click2StartGame} allPlayers={this.state.allPlayers}/> :
-                  <div>
+                  <div id="board">
                     <h1 id="game">Words With Whales</h1>
-                    < Board board={board} boardPlace={this.boardPlace}/>
+                    {this.state.turn &&
+                      <h2>It is player {this.state.turn + '\'s'} turn!</h2>
+                    }
+                    < ScoreBoard score={score} />
+                    < Board board={board} boardPlace={this.boardPlace} isMyTurn={this.state.color == this.state.turn}/>
                     < Bench bench={bench} mulligan={this.click2Mulligan} pickLetter={this.pickLetter} pass={this.pass} turn={this.state.turn} color={this.state.color} usedTiles={this.state.usedTiles} done={this.done}/>
                   </div>
                 }

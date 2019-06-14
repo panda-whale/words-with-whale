@@ -7,7 +7,7 @@ const Lobby = ({allPlayers, click2StartGame}) => {
 
   return (
       <div id="lobby">
-           <h1>Words With Whales</h1>
+           <h1 id="lobbyTitle">Words With Whales</h1>
           <div>
             {players}
           </div>
