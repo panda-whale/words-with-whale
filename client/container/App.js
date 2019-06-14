@@ -28,15 +28,16 @@ class App extends Component {
       bench: [],
       letter: {value : '', index : null},
       usedTiles: [],
+      hasFirstWord: false,
       }
 
       for (let i = 0; i < 15; i++) {
         let rowArr = [];
         for (let j = 0; j < 15; j++) {
           if (i === 7 && j == 7) {
-            rowArr.push({letter:'*', points: 0 })
+            rowArr.push({letter:'*', points: 0 });
           } else {
-            rowArr.push({letter: '-', points: 0 })
+            rowArr.push({letter: '-', points: 0 });
           }
         }
         this.state.board.push(rowArr);
@@ -50,7 +51,7 @@ class App extends Component {
       this.state.socket.on('initGame', ({tiles, turn}) => this.setState({
         ...this.state, turn, bench: tiles, gameHasStarted : 1}));
       this.state.socket.on('changeTurn', (turn) => this.setState({...this.state, turn}));
-      this.state.socket.on('updateBoard', (board) => this.setState({...this.state, board}));
+      this.state.socket.on('updateBoard', (board) => this.setState({...this.state, board, hasFirstWord:true}));
 
       // functions
       this.boardPlace = this.boardPlace.bind(this);
@@ -84,23 +85,48 @@ class App extends Component {
       return this.setState({...this.state, bench:newBench, usedTiles:[]});
       // setState
     }
-    boardPlace (e) {
-      if(this.state.letter.value !== ''){
-        let num = e.target.id.split(',');
 
-        let cord = this.state.board.slice();
-        if(cord[num[0]][num[1]].letter === '-' || cord[num[0]][num[1]].letter === '*') {
+    boardPlace (e) {
+      let num = e.target.id.split(',');
+
+      // can place letter on board
+      let cord = this.state.board.slice();
+      const newUsedTiles = this.state.usedTiles.slice();
+
+      console.log(['-','*'].includes(this.state.board[num[0]][num[1]].letter))
+      if(this.state.letter.value !== '' && ['-','*'].includes(this.state.board[num[0]][num[1]].letter)){
+        // clicking board to place letter
+
           cord[num[0]][num[1]].letter = this.state.letter.value;
           cord[num[0]][num[1]].points = this.state.bench[this.state.letter.index].points; //spaghetti
 
-          const newUsedTiles = this.state.usedTiles.slice();
           newUsedTiles.push({value: this.state.letter.value, benchId: this.state.letter.index, boardRowId: num[0], boardColId: num[1]});
+
+          this.setState({...this.state, board:cord, letter:{value : '', index : null}, usedTiles: newUsedTiles});
+        } else if (!['-','*'].includes(cord[num[0]][num[1]].letter)){ //clicking board to get letter back to bench
+          //check that letter is in my usedTiles
+          let found = false;
+          let index = -1;
+          console.log('searching usedtiles for this character')
+          for(let i = 0; i < newUsedTiles.length; i++) {
+            if(newUsedTiles[i].boardRowId == num[0] && newUsedTiles[i].boardColId == num[1]){
+              found = true;
+              index = i;
+              break;
+            }
+          }
+          console.log('was it found? ', found);
+          if(!found) return;
+
+          cord[num[0]][num[1]].letter = num[0] == 7 && num[1] == 7 ? '*' : '-';
+          cord[num[0]][num[1]].points = 0;
+          newUsedTiles.splice(index, 1);
 
           this.setState({...this.state, board:cord, letter:{value : '', index : null}, usedTiles: newUsedTiles});
         }
 
       }
-    }
+
 
     click2StartGame () {
       this.state.socket.emit('gameStart');
@@ -205,6 +231,13 @@ class App extends Component {
       }
 
       console.log('the words 2 check are: ', words2check);
+
+      // check that each word is longer than the number of tiles placed
+      // preventing user from placing words in different places
+      if(this.state.hasFirstWord)
+      for(let i = 0; i < words2check.length; i++) {
+        if(words2check[i].length < tiles.length + 1) return this.mismatchReset();
+      }
       /*
       //if horizontal, sort by boardColId, else sort by boardRowId
       if(direction == 'horizontal') {
@@ -259,9 +292,9 @@ class App extends Component {
         if(this.state.socket)  this.state.socket.emit('test', 'HERE IS MY EPIC TESTING DATAZ');
         return (
             <div className="mainContainer">
-                {/* {this.state.color &&
-                  <h2>YOU ARE PLAYER {this.state.color}</h2>
-                } */}
+                {this.state.color &&
+                  <h2>Welcome player {this.state.color}!</h2>
+                }
                 {this.state.turn &&
                   <h2>It is player {this.state.turn + '\'s'} turn!</h2>
                 }
